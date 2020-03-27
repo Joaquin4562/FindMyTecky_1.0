@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "431646030853",
+    "firebase_url": "https://findmytecky-164d1.firebaseio.com",
+    "project_id": "findmytecky-164d1",
+    "storage_bucket": "findmytecky-164d1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431646030853:android:ae32784edb5d7cd503706c",
+        "android_client_info": {
+          "package_name": "com.example.find_my_tecky_1_0"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "431646030853-97mhqe4kvch11lfr5ejirabi916t0chq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.find_my_tecky_1_0",
+            "certificate_hash": "cc36a402113ae3a9b0f095783d9943010135e07d"
+          }
+        },
+        {
+          "client_id": "431646030853-nrjc1k7m38lo0oad66kbd45h3u1fnqeh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwkVfegK2LZvGqOHFkMuZEf8Qy3jXqWLU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "431646030853-nrjc1k7m38lo0oad66kbd45h3u1fnqeh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
