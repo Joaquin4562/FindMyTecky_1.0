@@ -13,7 +13,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    var _duration = new Duration(seconds: 3);
+    var _duration = new Duration(seconds: 5);
     Timer(_duration, _cambiarPantalla);
   }
 
@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
              Container(
-                  width: width-100,
+                  width: width-160,
                   height: 250,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50), 

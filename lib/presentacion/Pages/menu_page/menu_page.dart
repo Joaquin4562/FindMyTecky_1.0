@@ -1,3 +1,4 @@
+import 'package:find_my_tecky_1_0/negocios/class/simple_animation.dart';
 import 'package:flutter/material.dart';
 
 
@@ -12,7 +13,7 @@ class _MenuPageState extends State<MenuPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        width: double.infinity,
+        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           color: Colors.black,
           image: DecorationImage(
@@ -26,12 +27,12 @@ class _MenuPageState extends State<MenuPage> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 150,left: 10,right: 10),
-              child: Row(
+              child: FadeAnimation(1,Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Container(
-                    width: 150,
-                    height: 150,
+                    width: MediaQuery.of(context).size.width-250,
+                    height: 130,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
                       image: DecorationImage(
@@ -47,11 +48,11 @@ class _MenuPageState extends State<MenuPage> {
                     ),
                     )
                 ],
-              ),
+              )),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 20),
-              child: Container(
+              child: FadeAnimation(1,Container(
                 height: MediaQuery.of(context).size.height-400,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
@@ -78,7 +79,7 @@ class _MenuPageState extends State<MenuPage> {
                     )
                   ],
                 ),
-              ),
+              )),
             )
           ],
         ),
