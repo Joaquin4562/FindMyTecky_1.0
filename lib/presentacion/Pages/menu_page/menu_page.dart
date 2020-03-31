@@ -15,7 +15,7 @@ class _MenuPageState extends State<MenuPage> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: Colors.black87,
           image: DecorationImage(
             image: AssetImage("assets/fondo.png"),
             fit: BoxFit.cover
