@@ -27,62 +27,66 @@ class _LoginPageState extends State<LoginPage> {
                 height: MediaQuery.of(context).size.height,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: Colors.black87,
                   image: DecorationImage(
                       image: AssetImage("assets/fondo.png"), fit: BoxFit.cover),
                 ),
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
-                  child: FadeAnimation(1,Container(
-                    decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: ListView(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 20.0),
-                      children: <Widget>[
-                        _textHeader(),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        _textSubHead(),
-                        Padding(
-                          padding: EdgeInsets.only(top: 100),
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 60),
+                  child: FadeAnimation(
+                      1,
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 90.0),
                           child: Column(
                             children: <Widget>[
-                              _inputCorreo(),
-                              Divider(),
-                              _inputContrasena(),
+                              _textHeader(),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              _textSubHead(),
+                              Padding(
+                                padding: EdgeInsets.only(top: 50),
+                                child: Column(
+                                  children: <Widget>[
+                                    _inputCorreo(),
+                                    Divider(),
+                                    _inputContrasena(),
+                                  ],
+                                ),
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  _olvidarcontrasena(),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  _textCondiciones(),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  _iniciarsesion(),
+                                  SizedBox(
+                                    child: Text(
+                                      'o',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 15),
+                                    ),
+                                    height: 20,
+                                  ),
+                                  _iniciargoogle(),
+                                ],
+                              ),
                             ],
                           ),
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            _olvidarcontrasena(),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            _textCondiciones(),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            _iniciarsesion(),
-                            SizedBox(
-                              child: Text(
-                                'o',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 15),
-                              ),
-                              height: 20,
-                            ),
-                            _iniciargoogle(),
-                          ],
-                        ),
-                      ],
-                    ),
-                  )),
+                      )),
                 )),
           ],
         )),
