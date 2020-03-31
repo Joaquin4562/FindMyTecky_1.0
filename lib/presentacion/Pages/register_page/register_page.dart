@@ -23,16 +23,16 @@ class _RegisterPageState extends State<RegisterPage> {
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 60),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 60),
             child: FadeAnimation(
                 1,
                 Container(
-                  height: MediaQuery.of(context).size.height - 100,
+                  height: MediaQuery.of(context).size.height - 50,
                   decoration: BoxDecoration(
                       color: Colors.grey.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(10)),
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 100,left: 5,right: 5),
+                    padding: const EdgeInsets.only(top: 40,left: 10,right: 10),
                     child: Column(
                       children: <Widget>[
                         Text(
