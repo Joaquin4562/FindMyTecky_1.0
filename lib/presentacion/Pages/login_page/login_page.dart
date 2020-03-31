@@ -13,85 +13,77 @@ class _LoginPageState extends State<LoginPage> {
   bool _isObscure = false;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SingleChildScrollView(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height,
-            minWidth: MediaQuery.of(context).size.width),
-        child: IntrinsicHeight(
-            child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Container(
-                height: MediaQuery.of(context).size.height,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.black87,
-                  image: DecorationImage(
-                      image: AssetImage("assets/fondo.png"), fit: BoxFit.cover),
-                ),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 60),
-                  child: FadeAnimation(
-                      1,
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.grey.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 90.0),
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.black87,
+        image: DecorationImage(
+            image: AssetImage("assets/fondo.png"), fit: BoxFit.cover),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+          body: SingleChildScrollView(
+        child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 90),
+            child: FadeAnimation(
+                1,
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+                    child: Column(
+                      children: <Widget>[
+                        _textHeader(),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        _textSubHead(),
+                        Padding(
+                          padding: EdgeInsets.only(top: 50),
                           child: Column(
                             children: <Widget>[
-                              _textHeader(),
-                              SizedBox(
-                                height: 30,
-                              ),
-                              _textSubHead(),
-                              Padding(
-                                padding: EdgeInsets.only(top: 50),
-                                child: Column(
-                                  children: <Widget>[
-                                    _inputCorreo(),
-                                    Divider(),
-                                    _inputContrasena(),
-                                  ],
-                                ),
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  _olvidarcontrasena(),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  _textCondiciones(),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  _iniciarsesion(),
-                                  SizedBox(
-                                    child: Text(
-                                      'o',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 15),
-                                    ),
-                                    height: 20,
-                                  ),
-                                  _iniciargoogle(),
-                                ],
-                              ),
+                              _inputCorreo(),
+                              Divider(),
+                              _inputContrasena(),
                             ],
                           ),
                         ),
-                      )),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            _olvidarcontrasena(),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            _textCondiciones(),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            _iniciarsesion(),
+                            SizedBox(
+                              child: Text(
+                                'o',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                              ),
+                              height: 20,
+                            ),
+                            _iniciargoogle(),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 )),
-          ],
-        )),
-      ),
-    ));
+          ),
+        ]),
+      )),
+    );
   }
 
   Widget _inputCorreo() {
