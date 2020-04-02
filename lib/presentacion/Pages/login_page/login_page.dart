@@ -181,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         textColor: Color.fromRGBO(32, 173, 244, 1),
         onPressed: () {
-          Navigator.pushNamed(context, 'OlvidarcontraPage');
+          Navigator.pushNamed(context, 'RecuperarPage');
         },
       ),
     );
