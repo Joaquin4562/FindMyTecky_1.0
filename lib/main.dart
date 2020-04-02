@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         'LoginPage': (BuildContext context) => LoginPage(),
         'RegisterPage': (BuildContext context) => RegisterPage(),
-        'OlvidarcontraPage': (BuildContext context) => OlvidarcontraPage(),
+        'RecuperarPage': (BuildContext context) => OlvidarcontraPage(),
         'MenuPage': (BuildContext context) => MenuPage(),
       },
       title: 'FindMyTecky!',
