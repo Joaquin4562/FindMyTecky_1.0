@@ -11,8 +11,9 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _isObscure = false;
   @override
   Widget build(BuildContext context) {
+      var screenSize = MediaQuery.of(context).size;
     return Container(
-      height: MediaQuery.of(context).size.height,
+      height: screenSize.height,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.black87,
@@ -27,12 +28,12 @@ class _RegisterPageState extends State<RegisterPage> {
             child: FadeAnimation(
                 1,
                 Container(
-                  height: MediaQuery.of(context).size.height - 50,
+                  height: screenSize.height < 600 ? screenSize.height-50 : screenSize.height +50,
                   decoration: BoxDecoration(
                       color: Colors.grey.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(10)),
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 40,left: 10,right: 10),
+                    padding: const EdgeInsets.only(top: 30,left: 10,right: 10),
                     child: Column(
                       children: <Widget>[
                         Text(
@@ -63,7 +64,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         _textCondiciones(),
                         SizedBox(
-                          height: 20,
+                          height: 30,
                         ),
                         _btnRegistrarse(),
                       ],
@@ -135,9 +136,9 @@ class _RegisterPageState extends State<RegisterPage> {
         helperStyle: TextStyle(
           color: Colors.white,
         ),
-        hintText: 'Ingrese su correo electronico',
+        hintText: 'Ingrese su correo electrónico',
         labelText: 'Correo:',
-        helperText: 'Solo usar correos con extension @itsmante.edu.mx',
+        helperText: 'Solo usar correos con extensión @itsmante.edu.mx',
         enabledBorder:
             UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
       ),
@@ -240,7 +241,7 @@ class _RegisterPageState extends State<RegisterPage> {
             recognizer: new TapGestureRecognizer()..onTap = () {}),
         TextSpan(text: 'y la'),
         TextSpan(
-            text: ' Politica de privaciada ',
+            text: ' Política de privaciada ',
             style: new TextStyle(color: Colors.blue),
             recognizer: new TapGestureRecognizer()..onTap = () {}),
         TextSpan(text: 'de Find My Tecky.'),
@@ -269,7 +270,7 @@ class _RegisterPageState extends State<RegisterPage> {
         textColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         onPressed: () {
-          print('hola');
+          print(MediaQuery.of(context).size.height);
         },
       ),
     );

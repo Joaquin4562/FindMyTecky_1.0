@@ -13,8 +13,9 @@ class _LoginPageState extends State<LoginPage> {
   bool _isObscure = false;
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
     return Container(
-      height: MediaQuery.of(context).size.height,
+      height: screenSize.height,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.black87,
@@ -94,12 +95,12 @@ class _LoginPageState extends State<LoginPage> {
       decoration: InputDecoration(
         enabledBorder:
             UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-        hintText: 'Ingrese su correo electronico',
+        hintText: 'Ingrese su correo electrónico',
         labelText: 'Correo:',
         helperStyle: TextStyle(color: Colors.white),
         hintStyle: TextStyle(color: Colors.white),
         labelStyle: TextStyle(color: Colors.white),
-        helperText: 'Solo usar correos con extension @itsmante.edu.mx',
+        helperText: 'Solo usar correos con extensión @itsmante.edu.mx',
         icon: Icon(
           Icons.account_circle,
           color: Colors.white,
