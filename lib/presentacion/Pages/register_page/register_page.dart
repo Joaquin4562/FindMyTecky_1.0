@@ -334,15 +334,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void registrar() async { 
 
-    await databaseReference.collection ( "Usuarios" ) 
-      .add ({ 
-        'apellido' : nombreController.text , 
+    await databaseReference.collection( "Usuarios" ) 
+      .add({ 
+        'apellido' : apellidoController.text , 
         'contraseña' : password1Controller.text,
         'correo' : correoController.text,
         'nombre' : nombreController.text
       });
-
-      print('Registro exitoso');
-
   }
 }
+
