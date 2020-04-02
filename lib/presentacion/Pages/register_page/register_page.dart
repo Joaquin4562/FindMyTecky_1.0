@@ -1,6 +1,7 @@
 import 'package:find_my_tecky_1_0/negocios/class/simple_animation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -8,7 +9,25 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final databaseReference = Firestore.instance;
+  final nombreController = TextEditingController();
+  final apellidoController = TextEditingController();
+  final correoController = TextEditingController();
+  final password1Controller = TextEditingController();
+  final password2Controller = TextEditingController();
   bool _isObscure = false;
+
+  @override
+  void dispose()
+  {
+    nombreController.dispose();
+    apellidoController.dispose();
+    correoController.dispose();
+    password1Controller.dispose();
+    password2Controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -78,6 +97,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _textfieldNombre() {
     return TextField(
+      controller: nombreController,
       style: TextStyle(
         color: Colors.white,
       ),
@@ -99,6 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _textfieldApellido() {
     return TextField(
+      controller: apellidoController,
       style: TextStyle(
         color: Colors.white,
       ),
@@ -120,6 +141,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _textfieldCorreo() {
     return TextField(
+      controller: correoController,
       style: TextStyle(
         color: Colors.white,
       ),
@@ -146,6 +168,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _textfieldContrasena() {
     return TextField(
+      controller: password1Controller,
       style: TextStyle(
         color: Colors.white,
       ),
@@ -175,6 +198,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _textfieldConfirma() {
     return TextField(
+      controller: password2Controller,
       style: TextStyle(
         color: Colors.white,
       ),
@@ -268,10 +292,56 @@ class _RegisterPageState extends State<RegisterPage> {
         color: Color.fromRGBO(32, 173, 244, 1),
         textColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        onPressed: () {
-          print('hola');
+        onPressed: (){
+          if(nombreController.text != '' && apellidoController.text != '' && correoController.text != '' && password1Controller.text != '' && password2Controller.text != '')
+          {
+            if(password2Controller.text == password1Controller.text)
+            {
+              registrar();
+            }
+            else
+            {
+              return showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    // Recupera el texto que el usuario ha digitado utilizando nuestro
+                    // TextEditingController
+                    content: Text('Los passwords no coinciden'),
+                  );
+                },
+              );
+            }
+          }
+          else
+          {
+            return showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  // Recupera el texto que el usuario ha digitado utilizando nuestro
+                  // TextEditingController
+                  content: Text('Por favor ingresa todos los datos'),
+                );
+              },
+            );
+          }
         },
       ),
     );
+  }
+
+  void registrar() async { 
+
+    await databaseReference.collection ( "Usuarios" ) 
+      .add ({ 
+        'apellido' : nombreController.text , 
+        'contraseña' : password1Controller.text,
+        'correo' : correoController.text,
+        'nombre' : nombreController.text
+      });
+
+      print('Registro exitoso');
+
   }
 }
