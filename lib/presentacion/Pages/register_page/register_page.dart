@@ -17,7 +17,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final correoController = TextEditingController();
   final password1Controller = TextEditingController();
   final password2Controller = TextEditingController();
-  bool _isObscure = false;
+  bool _isObscure = true;
 
   @override
   void dispose() {
@@ -179,7 +179,7 @@ class _RegisterPageState extends State<RegisterPage> {
       style: TextStyle(
         color: Colors.white,
       ),
-      obscureText: true,
+      obscureText: _isObscure,
       decoration: InputDecoration(
         hintStyle: TextStyle(
           color: Colors.white,
@@ -209,7 +209,7 @@ class _RegisterPageState extends State<RegisterPage> {
       style: TextStyle(
         color: Colors.white,
       ),
-      obscureText: true,
+      obscureText: _isObscure,
       decoration: InputDecoration(
         hintStyle: TextStyle(
           color: Colors.white,
@@ -298,23 +298,25 @@ class _RegisterPageState extends State<RegisterPage> {
                 if (_evaluarPassword(password1Controller.text) == true) {
                   if (_evaluarCorreo(correoController.text) == true) {
                     if (_verificarCorreo() == true) {
+                      
+                      registrar(context);
                     } else {
                       _showSnackBar(
-                          context, "ya existe una cuenta con ese correo");
+                          context, "ya existe una cuenta con ese correo", Icons.error,Colors.red);
                     }
                   } else {
                     _showSnackBar(context,
-                        "Recuerda usar un correo valido del instituto");
+                        "Recuerda usar un correo valido del instituto", Icons.error,Colors.red);
                   }
                 } else {
                   _showSnackBar(context,
-                      'Recuerda que la contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula y al menos una mayúscula.Puede tener otros símbolos.');
+                      'Recuerda que la contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula y al menos una mayúscula.Puede tener otros símbolos.', Icons.error,Colors.red);
                 }
               } else {
-                _showSnackBar(context, "el nombre es invalido");
+                _showSnackBar(context, "el nombre es invalido", Icons.error,Colors.red);
               }
             } else {
-              _showSnackBar(context, "las contraseñas no coinciden");
+              _showSnackBar(context, "las contraseñas no coinciden", Icons.error,Colors.red);
             }
           }
         },
@@ -322,7 +324,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void registrar() async {
+  void registrar(context) async {
     try {
       await firebaseAuth.createUserWithEmailAndPassword(
           email: correoController.text, password: password1Controller.text);
@@ -333,8 +335,10 @@ class _RegisterPageState extends State<RegisterPage> {
         'correo': correoController.text,
         'nombre': nombreController.text
       });
+     _showSnackBar(context, 'Registro exitoso', Icons.verified_user,Colors.green);
     } catch (e) {
-      print(e.message);
+    _showSnackBar(context, e.message, Icons.error,Colors.red);
+
     }
   }
 
@@ -366,9 +370,10 @@ class _RegisterPageState extends State<RegisterPage> {
     return exp.hasMatch(correo);
   }
 
-  void _showSnackBar(context, String mensaje) {
+  void _showSnackBar(context, String mensaje, IconData iconData, Color color) {
     Scaffold.of(context).showSnackBar(
       SnackBar(
+        duration: Duration(seconds: 5),
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         content: Row(
@@ -376,8 +381,8 @@ class _RegisterPageState extends State<RegisterPage> {
             Expanded(
                 flex: 1,
                 child: Icon(
-                  Icons.error,
-                  color: Colors.red,
+                  iconData,
+                  color: color,
                 )),
             Expanded(
                 flex: 5,
