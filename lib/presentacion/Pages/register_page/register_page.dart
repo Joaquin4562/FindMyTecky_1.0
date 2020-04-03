@@ -304,16 +304,23 @@ class _RegisterPageState extends State<RegisterPage> {
                 {
                   if(_evaluarCorreo(correoController.text) == true)
                   {
-                    return showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          // Recupera el texto que el usuario ha digitado utilizando nuestro
-                          // TextEditingController
-                          content: Text('Registro exitoso'),
-                        );
-                      },
-                    );
+                    if(_verificarCorreo() == true)
+                    {
+
+                    }
+                    else
+                    {
+                      return showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            // Recupera el texto que el usuario ha digitado utilizando nuestro
+                            // TextEditingController
+                            content: Text('Ya existe una cuenta con este correo'),
+                          );
+                        },
+                      );
+                    }
                   }
                   else
                   {
@@ -398,6 +405,17 @@ class _RegisterPageState extends State<RegisterPage> {
         'correo' : correoController.text,
         'nombre' : nombreController.text
       });
+  }
+
+  void getData() { 
+  databaseReference.collection("books").getDocuments().then((QuerySnapshot snapshot) { 
+    snapshot.documents.forEach((f) => print('${f.data}}')); 
+  }); 
+}
+
+  bool _verificarCorreo()
+  {
+    return true;
   }
 
   bool _evaluarCadena(String cadena)
