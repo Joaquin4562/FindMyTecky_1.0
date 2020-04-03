@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:find_my_tecky_1_0/datos/send_email.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -286,27 +287,18 @@ class _RegisterPageState extends State<RegisterPage> {
         color: Color.fromRGBO(32, 173, 244, 1),
         textColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        onPressed: () {
-          if (nombreController.text != '' &&
-              apellidoController.text != '' &&
-              correoController.text != '' &&
-              password1Controller.text != '' &&
-              password2Controller.text != '') {
-            if (password2Controller.text == password1Controller.text) {
-              if (_evaluarCadena(nombreController.text) == true &&
-                  _evaluarCadena(apellidoController.text) == true) {
-                if (_evaluarPassword(password1Controller.text) == true) {
-                  if (_evaluarCorreo(correoController.text) == true) {
-                    if (_verificarCorreo() == true) {
-                      
-                      registrar(context);
-                    } else {
-                      _showSnackBar(
-                          context, "ya existe una cuenta con ese correo", Icons.error,Colors.red);
-                    }
-                  } else {
-                    _showSnackBar(context,
-                        "Recuerda usar un correo valido del instituto", Icons.error,Colors.red);
+        onPressed: (){
+          if(nombreController.text != '' && apellidoController.text != '' && correoController.text != '' && password1Controller.text != '' && password2Controller.text != '')
+          {
+            if(password2Controller.text == password1Controller.text)
+            {
+              if(_evaluarCadena(nombreController.text) == true && _evaluarCadena(apellidoController.text) == true)
+              {
+                if(_evaluarPassword(password1Controller.text) == true)
+                {
+                  if(_evaluarCorreo(correoController.text) == true)
+                  {
+                    registrar(context);
                   }
                 } else {
                   _showSnackBar(context,
@@ -324,7 +316,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void registrar(context) async {
+  registrar(context) async {
     try {
       await firebaseAuth.createUserWithEmailAndPassword(
           email: correoController.text, password: password1Controller.text);
@@ -336,26 +328,15 @@ class _RegisterPageState extends State<RegisterPage> {
         'nombre': nombreController.text
       });
      _showSnackBar(context, 'Registro exitoso', Icons.verified_user,Colors.green);
+     final String  mensaje = 'Estimado ${nombreController.text} ${apellidoController.text}.\nTe damos la bienvenida a Find My Tecky.\nSi no has creado la cuenta, por favor haz clic en el siguiente enlace:\n[link]\n¡Muchas gracias por usar nuestra app!';
+    return sendEmail(correoController.text, 'Verificacion de cuenta', mensaje);
     } catch (e) {
     _showSnackBar(context, e.message, Icons.error,Colors.red);
-
     }
   }
 
-  void getData() {
-    databaseReference
-        .collection("books")
-        .getDocuments()
-        .then((QuerySnapshot snapshot) {
-      snapshot.documents.forEach((f) => print('${f.data}}'));
-    });
-  }
-
-  bool _verificarCorreo() {
-    return true;
-  }
-
-  bool _evaluarCadena(String cadena) {
+  bool _evaluarCadena(String cadena)
+  {
     RegExp exp = new RegExp(r"^([A-Z]{1}[a-z]+[ ]?){1,2}$");
     return exp.hasMatch(cadena);
   }
