@@ -12,7 +12,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   //String  _email = '';
-  bool _isObscure = false;
+  bool _isObscure = true;
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   TextEditingController _controllerEmail = new TextEditingController();
   TextEditingController _controllerPass = new TextEditingController();
@@ -73,14 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                                   height: 20,
                                 ),
                                 _iniciarsesion(),
-                                SizedBox(
-                                  child: Text(
-                                    'o',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 15),
-                                  ),
-                                  height: 20,
-                                ),
+                                _divider(),
                                 _iniciargoogle(),
                               ],
                             ),
@@ -168,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () {
           if (_controllerEmail.text != '' && _controllerPass.text != '') {
             _autenticar(_controllerEmail.text, _controllerPass.text);
-          }else{
+          } else {
             Fluttertoast.showToast(msg: "Rellena los campos");
           }
         },
@@ -186,16 +179,18 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _olvidarcontrasena() {
     return Padding(
-      padding: const EdgeInsets.only(right: 120),
-      child: FlatButton(
-        child: Text(
-          '¿Olvidaste tu contraseña?',
-          style: TextStyle(fontSize: 17),
-        ),
-        textColor: Color.fromRGBO(32, 173, 244, 1),
-        onPressed: () {
+      padding: const EdgeInsets.only(right: 140,top: 10),
+      child: GestureDetector(
+        onTap: () {
           Navigator.pushNamed(context, 'RecuperarPage');
         },
+        child: Text(
+          '¿Olvidaste tu contraseña?',
+          style: TextStyle(
+            fontSize: 17,
+            color: Color.fromRGBO(32, 173, 244, 1),
+          ),
+        ),
       ),
     );
   }
@@ -211,17 +206,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget _textSubHead() {
     return Text(
       '¡Inicia sesión para que no pierdas el tecky!',
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 18,
-      ),
-    );
-  }
-
-  Widget _textCondiciones() {
-    return Text(
-      'Al hacer click en "inicio de sesión", estas aceptando nuestras condiciones de Uso y Politica de privacidad',
       textAlign: TextAlign.center,
       style: TextStyle(
         color: Colors.white,
@@ -248,15 +232,74 @@ class _LoginPageState extends State<LoginPage> {
     try {
       AuthResult result = await firebaseAuth.signInWithEmailAndPassword(
           email: email, password: pass);
-      if(result != null){
+      if (result != null) {
         FirebaseUser user = result.user;
-      Navigator.pushNamed(context, 'RecuperarPage');
-      print(user.email);
-      }else{
+        Navigator.pushNamed(context, 'RecuperarPage');
+        print(user.email);
+      } else {
         Fluttertoast.showToast(msg: "error al iniciar sesión");
       }
     } catch (e) {
       Fluttertoast.showToast(msg: e.message);
     }
+  }
+
+  Widget _textCondiciones() {
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(children: [
+        TextSpan(
+            text:
+                'Al hacer click en "inicio de sesión", estas aceptando nuestras  '),
+        TextSpan(
+            text: 'Condiciones de servicio ',
+            style: new TextStyle(color: Colors.blue),
+            recognizer: new TapGestureRecognizer()..onTap = () {}),
+        TextSpan(text: 'y la'),
+        TextSpan(
+            text: ' Política de privaciada ',
+            style: new TextStyle(color: Colors.blue),
+            recognizer: new TapGestureRecognizer()..onTap = () {}),
+        TextSpan(text: 'de Find My Tecky.'),
+      ]),
+    );
+  }
+
+  Widget _divider() {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        children: <Widget>[
+          SizedBox(
+            width: 20,
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Divider(
+                color: Colors.white,
+                thickness: 1,
+              ),
+            ),
+          ),
+          Text(
+            'or',
+            style: TextStyle(color: Colors.white, fontSize: 15),
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Divider(
+                color: Colors.white,
+                thickness: 1,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -32,7 +32,7 @@ class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
       child: Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Padding(
-          padding: const EdgeInsets.only(bottom: 220),
+          padding: const EdgeInsets.only(bottom: 320),
           child: FloatingActionButton(
             onPressed: recoverPass,
             backgroundColor: Colors.blue,
@@ -43,38 +43,41 @@ class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
         ),
         backgroundColor: Colors.transparent,
         body: Center(
-          child: Container(
-            color: Colors.grey.withOpacity(0.3),
-            height: 200,
-            width: 360,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 45, left: 30, right: 30),
-              child: Column(
-                children: <Widget>[
-                  TextField(
-                    controller: email,
-                    autofocus: true,
-                    cursorWidth: 2,
-                    showCursor: true,
-                    cursorColor: Colors.amber,
-                    cursorRadius: Radius.circular(12),
-                    style: TextStyle(color: Colors.white),
-                    keyboardType: TextInputType.emailAddress,
-                    textCapitalization: TextCapitalization.sentences,
-                    decoration: InputDecoration(
-                      alignLabelWithHint: true,
-                      enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white)),
-                      hintText: 'Ingrese su correo electrónico',
-                      labelText: 'Correo:',
-                      helperStyle: TextStyle(color: Colors.white),
-                      hintStyle: TextStyle(color: Colors.white),
-                      labelStyle: TextStyle(color: Colors.white),
-                      helperText:
-                          'Solo usar correos con extensión @itsmante.edu.mx',
-                    ),
-                  )
-                ],
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              color: Colors.grey.withOpacity(0.3),
+              height: 200,
+              width: 360,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 45, left: 30, right: 30),
+                child: Column(
+                  children: <Widget>[
+                    TextField(
+                      controller: email,
+                      autofocus: true,
+                      cursorWidth: 2,
+                      showCursor: true,
+                      cursorColor: Colors.amber,
+                      cursorRadius: Radius.circular(12),
+                      style: TextStyle(color: Colors.white),
+                      keyboardType: TextInputType.emailAddress,
+                      textCapitalization: TextCapitalization.sentences,
+                      decoration: InputDecoration(
+                        alignLabelWithHint: true,
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        hintText: 'Ingrese su correo electrónico',
+                        labelText: 'Correo:',
+                        helperStyle: TextStyle(color: Colors.white),
+                        hintStyle: TextStyle(color: Colors.white),
+                        labelStyle: TextStyle(color: Colors.white),
+                        helperText:
+                            'Solo usar correos con extensión @itsmante.edu.mx',
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),

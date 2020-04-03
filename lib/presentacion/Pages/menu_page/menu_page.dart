@@ -30,14 +30,8 @@ class _MenuPageState extends State<MenuPage> {
                     Expanded(
                       flex: 3,
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          height: 120,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage("assets/logo.png"))),
-                        ),
-                      ),
+                          borderRadius: BorderRadius.circular(30),
+                          child: Image(image: AssetImage("assets/logo.png"),height: 130,)),
                     ),
                     Expanded(
                       flex: 4,
@@ -68,13 +62,7 @@ class _MenuPageState extends State<MenuPage> {
                       Column(
                         children: <Widget>[
                           _ingresarLog(context),
-                          Divider(
-                            height: 30,
-                            thickness: 2,
-                            color: Colors.white,
-                            indent: 20,
-                            endIndent: 20,
-                          ),
+                          _divider(),
                           _crearCuenta()
                         ],
                       )
@@ -115,6 +103,40 @@ class _MenuPageState extends State<MenuPage> {
         onPressed: () {
           Navigator.pushNamed(context, 'RegisterPage');
         },
+      ),
+    );
+  }
+  Widget _divider() {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        children: <Widget>[
+          SizedBox(
+            width: 20,
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Divider(
+                color: Colors.white,
+                thickness: 1,
+              ),
+            ),
+          ),
+          Text('or',style: TextStyle(color: Colors.white,fontSize: 15),),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Divider(
+                color: Colors.white,
+                thickness: 1,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+        ],
       ),
     );
   }
