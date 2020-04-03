@@ -293,62 +293,29 @@ class _RegisterPageState extends State<RegisterPage> {
               password1Controller.text != '' &&
               password2Controller.text != '') {
             if (password2Controller.text == password1Controller.text) {
-              registrar();
+              if (_evaluarCadena(nombreController.text) == true &&
+                  _evaluarCadena(apellidoController.text) == true) {
+                if (_evaluarPassword(password1Controller.text) == true) {
+                  if (_evaluarCorreo(correoController.text) == true) {
+                    if (_verificarCorreo() == true) {
+                    } else {
+                      _showSnackBar(
+                          context, "ya existe una cuenta con ese correo");
+                    }
+                  } else {
+                    _showSnackBar(context,
+                        "Recuerda usar un correo valido del instituto");
+                  }
+                } else {
+                  _showSnackBar(context,
+                      'Recuerda que la contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula y al menos una mayúscula.Puede tener otros símbolos.');
+                }
+              } else {
+                _showSnackBar(context, "el nombre es invalido");
+              }
             } else {
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5)),
-                  content: Row(
-                    children: <Widget>[
-                      Expanded(
-                          flex: 1,
-                          child: Icon(
-                            Icons.error,
-                            color: Colors.red,
-                          )),
-                      Expanded(
-                          flex: 5,
-                          child: Text(
-                            'Las contraseñas no coinciden',
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ))
-                    ],
-                  ),
-                ),
-              );
+              _showSnackBar(context, "las contraseñas no coinciden");
             }
-          } else {
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5)),
-                content: Row(
-                  children: <Widget>[
-                    Expanded(
-                        flex: 1,
-                        child: Icon(
-                          Icons.error,
-                          color: Colors.red,
-                        )),
-                    Expanded(
-                        flex: 5,
-                        child: Text(
-                          'Faltan datos',
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                        ))
-                  ],
-                ),
-              ),
-            );
           }
         },
       ),
@@ -369,5 +336,61 @@ class _RegisterPageState extends State<RegisterPage> {
     } catch (e) {
       print(e.message);
     }
+  }
+
+  void getData() {
+    databaseReference
+        .collection("books")
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((f) => print('${f.data}}'));
+    });
+  }
+
+  bool _verificarCorreo() {
+    return true;
+  }
+
+  bool _evaluarCadena(String cadena) {
+    RegExp exp = new RegExp(r"^([A-Z]{1}[a-z]+[ ]?){1,2}$");
+    return exp.hasMatch(cadena);
+  }
+
+  bool _evaluarPassword(String password) {
+    RegExp exp = new RegExp(r"^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8,16}$");
+    return exp.hasMatch(password);
+  }
+
+  bool _evaluarCorreo(String correo) {
+    RegExp exp = new RegExp(r"^([a-z0-9_\.-]+)@itsmante\.edu\.mx$");
+    return exp.hasMatch(correo);
+  }
+
+  void _showSnackBar(context, String mensaje) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        content: Row(
+          children: <Widget>[
+            Expanded(
+                flex: 1,
+                child: Icon(
+                  Icons.error,
+                  color: Colors.red,
+                )),
+            Expanded(
+                flex: 5,
+                child: Text(
+                  mensaje,
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold),
+                ))
+          ],
+        ),
+      ),
+    );
   }
 }
