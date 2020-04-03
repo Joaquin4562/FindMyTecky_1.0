@@ -1,7 +1,9 @@
 import 'package:find_my_tecky_1_0/negocios/class/simple_animation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -11,6 +13,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   //String  _email = '';
   bool _isObscure = false;
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  TextEditingController _controllerEmail = new TextEditingController();
+  TextEditingController _controllerPass = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -23,72 +29,74 @@ class _LoginPageState extends State<LoginPage> {
             image: AssetImage("assets/fondo.png"), fit: BoxFit.cover),
       ),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+          backgroundColor: Colors.transparent,
           body: SingleChildScrollView(
-        child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 90),
-            child: FadeAnimation(
-                1,
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
-                    child: Column(
-                      children: <Widget>[
-                        _textHeader(),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        _textSubHead(),
-                        Padding(
-                          padding: EdgeInsets.only(top: 50),
-                          child: Column(
-                            children: <Widget>[
-                              _inputCorreo(),
-                              Divider(),
-                              _inputContrasena(),
-                            ],
-                          ),
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
+            child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 90),
+                child: FadeAnimation(
+                    1,
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 20.0),
+                        child: Column(
                           children: <Widget>[
-                            _olvidarcontrasena(),
+                            _textHeader(),
                             SizedBox(
-                              height: 20,
+                              height: 30,
                             ),
-                            _textCondiciones(),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            _iniciarsesion(),
-                            SizedBox(
-                              child: Text(
-                                'o',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 15),
+                            _textSubHead(),
+                            Padding(
+                              padding: EdgeInsets.only(top: 50),
+                              child: Column(
+                                children: <Widget>[
+                                  _inputCorreo(),
+                                  Divider(),
+                                  _inputContrasena(),
+                                ],
                               ),
-                              height: 20,
                             ),
-                            _iniciargoogle(),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                _olvidarcontrasena(),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                _textCondiciones(),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                _iniciarsesion(),
+                                SizedBox(
+                                  child: Text(
+                                    'o',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 15),
+                                  ),
+                                  height: 20,
+                                ),
+                                _iniciargoogle(),
+                              ],
+                            ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                )),
-          ),
-        ]),
-      )),
+                      ),
+                    )),
+              ),
+            ]),
+          )),
     );
   }
 
   Widget _inputCorreo() {
     return TextField(
+      controller: _controllerEmail,
       style: TextStyle(color: Colors.white),
       keyboardType: TextInputType.emailAddress,
       textCapitalization: TextCapitalization.sentences,
@@ -111,6 +119,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _inputContrasena() {
     return TextField(
+      controller: _controllerPass,
       style: TextStyle(color: Colors.white),
       obscureText: _isObscure,
       decoration: InputDecoration(
@@ -157,7 +166,11 @@ class _LoginPageState extends State<LoginPage> {
         textColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         onPressed: () {
-          print('hola');
+          if (_controllerEmail.text != '' && _controllerPass.text != '') {
+            _autenticar(_controllerEmail.text, _controllerPass.text);
+          }else{
+            Fluttertoast.showToast(msg: "Rellena los campos");
+          }
         },
       ),
     );
@@ -229,5 +242,21 @@ class _LoginPageState extends State<LoginPage> {
       Icons.visibility_off,
       color: Colors.white,
     );
+  }
+
+  Future _autenticar(String email, String pass) async {
+    try {
+      AuthResult result = await firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: pass);
+      if(result != null){
+        FirebaseUser user = result.user;
+      Navigator.pushNamed(context, 'RecuperarPage');
+      print(user.email);
+      }else{
+        Fluttertoast.showToast(msg: "error al iniciar sesión");
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.message);
+    }
   }
 }

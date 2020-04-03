@@ -1,4 +1,5 @@
 import 'package:find_my_tecky_1_0/negocios/class/simple_animation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,16 +11,16 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final databaseReference = Firestore.instance;
+  final firebaseAuth = FirebaseAuth.instance;
   final nombreController = TextEditingController();
   final apellidoController = TextEditingController();
   final correoController = TextEditingController();
   final password1Controller = TextEditingController();
   final password2Controller = TextEditingController();
-  bool _isObscure = false;
+  bool _isObscure = true;
 
   @override
-  void dispose()
-  {
+  void dispose() {
     nombreController.dispose();
     apellidoController.dispose();
     correoController.dispose();
@@ -30,7 +31,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-      var screenSize = MediaQuery.of(context).size;
+    var screenSize = MediaQuery.of(context).size;
     return Container(
       height: screenSize.height,
       width: double.infinity,
@@ -41,57 +42,62 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 60),
-            child: FadeAnimation(
-                1,
-                Container(
-                  height: screenSize.height < 600 ? screenSize.height-50 : screenSize.height +50,
-                  decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 30,left: 10,right: 10),
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'Crea una cuenta',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 40,
+        body: Builder(builder: (context) {
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 60),
+              child: FadeAnimation(
+                  1,
+                  Container(
+                    height: screenSize.height < 600
+                        ? screenSize.height + 50
+                        : screenSize.height - 100,
+                    decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(top: 30, left: 10, right: 10),
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            'Crea una cuenta',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 40,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 40,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(15),
-                          child: Column(
-                            children: <Widget>[
-                              _textfieldNombre(),
-                              _textfieldApellido(),
-                              _textfieldCorreo(),
-                              _textfieldContrasena(),
-                              _textfieldConfirma()
-                            ],
+                          SizedBox(
+                            height: 40,
                           ),
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        _textCondiciones(),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        _btnRegistrarse(),
-                      ],
+                          Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Column(
+                              children: <Widget>[
+                                _textfieldNombre(),
+                                _textfieldApellido(),
+                                _textfieldCorreo(),
+                                _textfieldContrasena(),
+                                _textfieldConfirma()
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          _textCondiciones(),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          _btnRegistrarse(context),
+                        ],
+                      ),
                     ),
-                  ),
-                )),
-          ),
-        ),
+                  )),
+            ),
+          );
+        }),
       ),
     );
   }
@@ -173,7 +179,7 @@ class _RegisterPageState extends State<RegisterPage> {
       style: TextStyle(
         color: Colors.white,
       ),
-      obscureText: true,
+      obscureText: _isObscure,
       decoration: InputDecoration(
         hintStyle: TextStyle(
           color: Colors.white,
@@ -203,7 +209,7 @@ class _RegisterPageState extends State<RegisterPage> {
       style: TextStyle(
         color: Colors.white,
       ),
-      obscureText: true,
+      obscureText: _isObscure,
       decoration: InputDecoration(
         hintStyle: TextStyle(
           color: Colors.white,
@@ -241,19 +247,6 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  _crearcuenta() {
-    return RaisedButton(
-      child: Text('Crea sesión'),
-      elevation: (10),
-      color: Colors.blue,
-      textColor: Colors.white,
-      shape: StadiumBorder(),
-      onPressed: () {
-        print('hola');
-      },
-    );
-  }
-
   Widget _textCondiciones() {
     return RichText(
       textAlign: TextAlign.center,
@@ -273,7 +266,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _btnRegistrarse() {
+  Widget _btnRegistrarse(BuildContext context) {
     return Container(
       height: 50,
       width: 300,
@@ -293,149 +286,116 @@ class _RegisterPageState extends State<RegisterPage> {
         color: Color.fromRGBO(32, 173, 244, 1),
         textColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        onPressed: (){
-          if(nombreController.text != '' && apellidoController.text != '' && correoController.text != '' && password1Controller.text != '' && password2Controller.text != '')
-          {
-            if(password2Controller.text == password1Controller.text)
-            {
-              if(_evaluarCadena(nombreController.text) == true && _evaluarCadena(apellidoController.text) == true)
-              {
-                if(_evaluarPassword(password1Controller.text) == true)
-                {
-                  if(_evaluarCorreo(correoController.text) == true)
-                  {
-                    if(_verificarCorreo() == true)
-                    {
-
+        onPressed: () {
+          if (nombreController.text != '' &&
+              apellidoController.text != '' &&
+              correoController.text != '' &&
+              password1Controller.text != '' &&
+              password2Controller.text != '') {
+            if (password2Controller.text == password1Controller.text) {
+              if (_evaluarCadena(nombreController.text) == true &&
+                  _evaluarCadena(apellidoController.text) == true) {
+                if (_evaluarPassword(password1Controller.text) == true) {
+                  if (_evaluarCorreo(correoController.text) == true) {
+                    if (_verificarCorreo() == true) {
+                      
+                      registrar(context);
+                    } else {
+                      _showSnackBar(
+                          context, "ya existe una cuenta con ese correo", Icons.error,Colors.red);
                     }
-                    else
-                    {
-                      return showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            // Recupera el texto que el usuario ha digitado utilizando nuestro
-                            // TextEditingController
-                            content: Text('Ya existe una cuenta con este correo'),
-                          );
-                        },
-                      );
-                    }
+                  } else {
+                    _showSnackBar(context,
+                        "Recuerda usar un correo valido del instituto", Icons.error,Colors.red);
                   }
-                  else
-                  {
-                    return showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          // Recupera el texto que el usuario ha digitado utilizando nuestro
-                          // TextEditingController
-                          content: Text('Recuerda usar un correo valido del instituto'),
-                        );
-                      },
-                    );
-                  }
+                } else {
+                  _showSnackBar(context,
+                      'Recuerda que la contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula y al menos una mayúscula.Puede tener otros símbolos.', Icons.error,Colors.red);
                 }
-                else
-                {
-                  return showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        // Recupera el texto que el usuario ha digitado utilizando nuestro
-                        // TextEditingController
-                        content: Text('Recuerda que la contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula y al menos una mayúscula.Puede tener otros símbolos.'),
-                      );
-                    },
-                  );
-                }
+              } else {
+                _showSnackBar(context, "el nombre es invalido", Icons.error,Colors.red);
               }
-              else
-              {
-                return showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      // Recupera el texto que el usuario ha digitado utilizando nuestro
-                      // TextEditingController
-                      content: Text('El nombre no es valido'),
-                    );
-                  },
-                );
-              }
+            } else {
+              _showSnackBar(context, "las contraseñas no coinciden", Icons.error,Colors.red);
             }
-            else
-            {
-              return showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    // Recupera el texto que el usuario ha digitado utilizando nuestro
-                    // TextEditingController
-                    content: Text('Los passwords no coinciden'),
-                  );
-                },
-              );
-            }
-          }
-          else
-          {
-            return showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  // Recupera el texto que el usuario ha digitado utilizando nuestro
-                  // TextEditingController
-                  content: Text('Por favor ingresa todos los datos'),
-                );
-              },
-            );
           }
         },
       ),
     );
   }
 
-  void registrar() async { 
-
-    await databaseReference.collection( "Usuarios" ) 
-      .add({ 
-        'apellido' : apellidoController.text , 
-        'contraseña' : password1Controller.text,
-        'correo' : correoController.text,
-        'nombre' : nombreController.text
+  void registrar(context) async {
+    try {
+      await firebaseAuth.createUserWithEmailAndPassword(
+          email: correoController.text, password: password1Controller.text);
+      print("si");
+      await databaseReference.collection("Usuarios").add({
+        'apellido': apellidoController.text,
+        'contraseña': password1Controller.text,
+        'correo': correoController.text,
+        'nombre': nombreController.text
       });
+     _showSnackBar(context, 'Registro exitoso', Icons.verified_user,Colors.green);
+    } catch (e) {
+    _showSnackBar(context, e.message, Icons.error,Colors.red);
+
+    }
   }
 
-  void getData() { 
-  databaseReference.collection("books").getDocuments().then((QuerySnapshot snapshot) { 
-    snapshot.documents.forEach((f) => print('${f.data}}')); 
-  }); 
-}
+  void getData() {
+    databaseReference
+        .collection("books")
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((f) => print('${f.data}}'));
+    });
+  }
 
-  bool _verificarCorreo()
-  {
+  bool _verificarCorreo() {
     return true;
   }
 
-  bool _evaluarCadena(String cadena)
-  {
+  bool _evaluarCadena(String cadena) {
     RegExp exp = new RegExp(r"^([A-Z]{1}[a-z]+[ ]?){1,2}$");
     return exp.hasMatch(cadena);
   }
 
-  bool _evaluarPassword(String password)
-  {
+  bool _evaluarPassword(String password) {
     RegExp exp = new RegExp(r"^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8,16}$");
     return exp.hasMatch(password);
   }
 
-  bool _evaluarCorreo(String correo)
-  {
+  bool _evaluarCorreo(String correo) {
     RegExp exp = new RegExp(r"^([a-z0-9_\.-]+)@itsmante\.edu\.mx$");
     return exp.hasMatch(correo);
   }
 
-
+  void _showSnackBar(context, String mensaje, IconData iconData, Color color) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        duration: Duration(seconds: 5),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        content: Row(
+          children: <Widget>[
+            Expanded(
+                flex: 1,
+                child: Icon(
+                  iconData,
+                  color: color,
+                )),
+            Expanded(
+                flex: 5,
+                child: Text(
+                  mensaje,
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold),
+                ))
+          ],
+        ),
+      ),
+    );
+  }
 }
-
