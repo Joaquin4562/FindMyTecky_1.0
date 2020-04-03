@@ -1,4 +1,5 @@
 import 'package:find_my_tecky_1_0/negocios/class/simple_animation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +11,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final databaseReference = Firestore.instance;
+  final firebaseAuth = FirebaseAuth.instance;
   final nombreController = TextEditingController();
   final apellidoController = TextEditingController();
   final correoController = TextEditingController();
@@ -18,8 +20,7 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _isObscure = false;
 
   @override
-  void dispose()
-  {
+  void dispose() {
     nombreController.dispose();
     apellidoController.dispose();
     correoController.dispose();
@@ -30,7 +31,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-      var screenSize = MediaQuery.of(context).size;
+    var screenSize = MediaQuery.of(context).size;
     return Container(
       height: screenSize.height,
       width: double.infinity,
@@ -41,57 +42,62 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 60),
-            child: FadeAnimation(
-                1,
-                Container(
-                  height: screenSize.height < 600 ? screenSize.height-50 : screenSize.height +50,
-                  decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 30,left: 10,right: 10),
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'Crea una cuenta',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 40,
+        body: Builder(builder: (context) {
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 60),
+              child: FadeAnimation(
+                  1,
+                  Container(
+                    height: screenSize.height < 600
+                        ? screenSize.height + 50
+                        : screenSize.height - 100,
+                    decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(top: 30, left: 10, right: 10),
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            'Crea una cuenta',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 40,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 40,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(15),
-                          child: Column(
-                            children: <Widget>[
-                              _textfieldNombre(),
-                              _textfieldApellido(),
-                              _textfieldCorreo(),
-                              _textfieldContrasena(),
-                              _textfieldConfirma()
-                            ],
+                          SizedBox(
+                            height: 40,
                           ),
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        _textCondiciones(),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        _btnRegistrarse(),
-                      ],
+                          Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Column(
+                              children: <Widget>[
+                                _textfieldNombre(),
+                                _textfieldApellido(),
+                                _textfieldCorreo(),
+                                _textfieldContrasena(),
+                                _textfieldConfirma()
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          _textCondiciones(),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          _btnRegistrarse(context),
+                        ],
+                      ),
                     ),
-                  ),
-                )),
-          ),
-        ),
+                  )),
+            ),
+          );
+        }),
       ),
     );
   }
@@ -241,19 +247,6 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  _crearcuenta() {
-    return RaisedButton(
-      child: Text('Crea sesión'),
-      elevation: (10),
-      color: Colors.blue,
-      textColor: Colors.white,
-      shape: StadiumBorder(),
-      onPressed: () {
-        print('hola');
-      },
-    );
-  }
-
   Widget _textCondiciones() {
     return RichText(
       textAlign: TextAlign.center,
@@ -273,7 +266,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _btnRegistrarse() {
+  Widget _btnRegistrarse(BuildContext context) {
     return Container(
       height: 50,
       width: 300,
@@ -293,38 +286,68 @@ class _RegisterPageState extends State<RegisterPage> {
         color: Color.fromRGBO(32, 173, 244, 1),
         textColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        onPressed: (){
-          if(nombreController.text != '' && apellidoController.text != '' && correoController.text != '' && password1Controller.text != '' && password2Controller.text != '')
-          {
-            if(password2Controller.text == password1Controller.text)
-            {
+        onPressed: () {
+          if (nombreController.text != '' &&
+              apellidoController.text != '' &&
+              correoController.text != '' &&
+              password1Controller.text != '' &&
+              password2Controller.text != '') {
+            if (password2Controller.text == password1Controller.text) {
               registrar();
-            }
-            else
-            {
-              return showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    // Recupera el texto que el usuario ha digitado utilizando nuestro
-                    // TextEditingController
-                    content: Text('Los passwords no coinciden'),
-                  );
-                },
+            } else {
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5)),
+                  content: Row(
+                    children: <Widget>[
+                      Expanded(
+                          flex: 1,
+                          child: Icon(
+                            Icons.error,
+                            color: Colors.red,
+                          )),
+                      Expanded(
+                          flex: 5,
+                          child: Text(
+                            'Las contraseñas no coinciden',
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ))
+                    ],
+                  ),
+                ),
               );
             }
-          }
-          else
-          {
-            return showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  // Recupera el texto que el usuario ha digitado utilizando nuestro
-                  // TextEditingController
-                  content: Text('Por favor ingresa todos los datos'),
-                );
-              },
+          } else {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5)),
+                content: Row(
+                  children: <Widget>[
+                    Expanded(
+                        flex: 1,
+                        child: Icon(
+                          Icons.error,
+                          color: Colors.red,
+                        )),
+                    Expanded(
+                        flex: 5,
+                        child: Text(
+                          'Faltan datos',
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
+                        ))
+                  ],
+                ),
+              ),
             );
           }
         },
@@ -332,15 +355,19 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void registrar() async { 
-
-    await databaseReference.collection( "Usuarios" ) 
-      .add({ 
-        'apellido' : apellidoController.text , 
-        'contraseña' : password1Controller.text,
-        'correo' : correoController.text,
-        'nombre' : nombreController.text
+  void registrar() async {
+    try {
+      await firebaseAuth.createUserWithEmailAndPassword(
+          email: correoController.text, password: password1Controller.text);
+      print("si");
+      await databaseReference.collection("Usuarios").add({
+        'apellido': apellidoController.text,
+        'contraseña': password1Controller.text,
+        'correo': correoController.text,
+        'nombre': nombreController.text
       });
+    } catch (e) {
+      print(e.message);
+    }
   }
 }
-
