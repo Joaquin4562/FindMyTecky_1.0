@@ -298,7 +298,71 @@ class _RegisterPageState extends State<RegisterPage> {
           {
             if(password2Controller.text == password1Controller.text)
             {
-              registrar();
+              if(_evaluarCadena(nombreController.text) == true && _evaluarCadena(apellidoController.text) == true)
+              {
+                if(_evaluarPassword(password1Controller.text) == true)
+                {
+                  if(_evaluarCorreo(correoController.text) == true)
+                  {
+                    if(_verificarCorreo() == true)
+                    {
+
+                    }
+                    else
+                    {
+                      return showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            // Recupera el texto que el usuario ha digitado utilizando nuestro
+                            // TextEditingController
+                            content: Text('Ya existe una cuenta con este correo'),
+                          );
+                        },
+                      );
+                    }
+                  }
+                  else
+                  {
+                    return showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          // Recupera el texto que el usuario ha digitado utilizando nuestro
+                          // TextEditingController
+                          content: Text('Recuerda usar un correo valido del instituto'),
+                        );
+                      },
+                    );
+                  }
+                }
+                else
+                {
+                  return showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        // Recupera el texto que el usuario ha digitado utilizando nuestro
+                        // TextEditingController
+                        content: Text('Recuerda que la contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula y al menos una mayúscula.Puede tener otros símbolos.'),
+                      );
+                    },
+                  );
+                }
+              }
+              else
+              {
+                return showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      // Recupera el texto que el usuario ha digitado utilizando nuestro
+                      // TextEditingController
+                      content: Text('El nombre no es valido'),
+                    );
+                  },
+                );
+              }
             }
             else
             {
@@ -342,5 +406,36 @@ class _RegisterPageState extends State<RegisterPage> {
         'nombre' : nombreController.text
       });
   }
+
+  void getData() { 
+  databaseReference.collection("books").getDocuments().then((QuerySnapshot snapshot) { 
+    snapshot.documents.forEach((f) => print('${f.data}}')); 
+  }); 
+}
+
+  bool _verificarCorreo()
+  {
+    return true;
+  }
+
+  bool _evaluarCadena(String cadena)
+  {
+    RegExp exp = new RegExp(r"^([A-Z]{1}[a-z]+[ ]?){1,2}$");
+    return exp.hasMatch(cadena);
+  }
+
+  bool _evaluarPassword(String password)
+  {
+    RegExp exp = new RegExp(r"^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8,16}$");
+    return exp.hasMatch(password);
+  }
+
+  bool _evaluarCorreo(String correo)
+  {
+    RegExp exp = new RegExp(r"^([a-z0-9_\.-]+)@itsmante\.edu\.mx$");
+    return exp.hasMatch(correo);
+  }
+
+
 }
 
