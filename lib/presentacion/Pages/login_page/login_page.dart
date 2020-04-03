@@ -1,13 +1,45 @@
 import 'package:find_my_tecky_1_0/negocios/class/simple_animation.dart';
+import 'package:find_my_tecky_1_0/presentacion/Pages/menu_page/menu_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
+}
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final GoogleSignIn googleSignIn = GoogleSignIn ();
+ 
+Future <String> signInWithGoogle () async {
+  final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+  final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
+
+  final AuthCredential credential = GoogleAuthProvider.getCredential(
+    accessToken: googleSignInAuthentication.accessToken, 
+    idToken: googleSignInAuthentication.idToken,
+    ); 
+
+    final AuthResult authResult = await _auth.signInWithCredential(credential);
+    final FirebaseUser user = authResult.user;
+
+    assert (!user.isAnonymous);
+    assert (await user.getIdToken() != null);
+
+    final FirebaseUser currentUser  = await _auth.currentUser();
+    assert (user.uid == currentUser.uid);
+
+    return 'signInWithGoogle succeeded: $user';
+}
+
+void signOutGoogle () async {
+  await googleSignIn.signOut();
+
+  print ('User sign out');
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -174,7 +206,17 @@ class _LoginPageState extends State<LoginPage> {
         text: 'Iniciar con Google',
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 40),
-        onPressed: () {});
+        onPressed: () {
+          signInWithGoogle().whenComplete((){
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                return MenuPage();
+                },
+              ),
+            );
+          });
+        });
   }
 
   Widget _olvidarcontrasena() {
