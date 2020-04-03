@@ -25,6 +25,8 @@ dependencies:
 
   mailer: ^3.0.3
 
+  firebase_auth:
+  fluttertoast: ^4.0.0
   cupertino_icons: ^0.1.2
 
 dev_dependencies:
