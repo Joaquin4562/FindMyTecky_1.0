@@ -1,3 +1,6 @@
+import 'package:find_my_tecky_1_0/negocios/class/usuario.dart';
+import 'package:find_my_tecky_1_0/negocios/util/pass_recover_utils.dart';
+import 'package:find_my_tecky_1_0/negocios/util/user_utils.dart';
 import 'package:flutter/material.dart';
 
 class OlvidarcontraPage extends StatefulWidget {
@@ -6,6 +9,15 @@ class OlvidarcontraPage extends StatefulWidget {
 }
 
 class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
+
+  TextEditingController email = TextEditingController();
+
+  @override
+  void initState() { 
+    super.initState();
+    getAllUsers();
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -22,7 +34,7 @@ class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 220),
           child: FloatingActionButton(
-            onPressed: () {},
+            onPressed: recoverPass,
             
             backgroundColor: Colors.blue,
             child: Center(
@@ -45,6 +57,7 @@ class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
               child: Column(
                 children: <Widget>[
                   TextField(
+                    controller: email,
                     autofocus: true,
                     cursorWidth: 2,
                     showCursor: true,
@@ -75,11 +88,25 @@ class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
     );
   }
 
+  recoverPass() async {
+    Usuario user = compareEmail(email.text);
+    if (user != null) {
+      constructEmail("${user.nombre} ${user.apellidos}", user.correo);
+      print('Se envió un email al correo');
+    } else {
+      print('Email inválido');
+    }
+    //validar email
+  }
+
   Widget _validar() {
     return FloatingActionButton(
       backgroundColor: Color.fromRGBO(0, 91, 160, 100),
       child: Icon(Icons.send),
-      onPressed: () {},
+      onPressed: () {
+        print('KT');
+        
+      },
     );
   }
 }

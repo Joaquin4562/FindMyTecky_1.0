@@ -23,6 +23,8 @@ dependencies:
   simple_animations: ^1.3.9
   cloud_firestore:
 
+  mailer: ^3.0.3
+
   cupertino_icons: ^0.1.2
 
 dev_dependencies:
