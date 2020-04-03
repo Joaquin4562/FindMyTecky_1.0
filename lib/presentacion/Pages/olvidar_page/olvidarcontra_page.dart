@@ -2,6 +2,7 @@ import 'package:find_my_tecky_1_0/negocios/class/usuario.dart';
 import 'package:find_my_tecky_1_0/negocios/util/pass_recover_utils.dart';
 import 'package:find_my_tecky_1_0/negocios/util/user_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class OlvidarcontraPage extends StatefulWidget {
   @override
@@ -9,11 +10,10 @@ class OlvidarcontraPage extends StatefulWidget {
 }
 
 class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
-
   TextEditingController email = TextEditingController();
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     getAllUsers();
   }
@@ -35,7 +35,6 @@ class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
           padding: const EdgeInsets.only(bottom: 220),
           child: FloatingActionButton(
             onPressed: recoverPass,
-            
             backgroundColor: Colors.blue,
             child: Center(
               child: Icon(Icons.send),
@@ -49,11 +48,7 @@ class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
             height: 200,
             width: 360,
             child: Padding(
-              padding: const EdgeInsets.only(
-                top: 45,
-                left: 30,
-                right: 30
-              ),
+              padding: const EdgeInsets.only(top: 45, left: 30, right: 30),
               child: Column(
                 children: <Widget>[
                   TextField(
@@ -92,21 +87,23 @@ class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
     Usuario user = compareEmail(email.text);
     if (user != null) {
       constructEmail("${user.nombre} ${user.apellidos}", user.correo);
-      print('Se envió un email al correo');
+      Fluttertoast.showToast(
+        msg: "Se envio un Correo",
+        backgroundColor: Colors.white,
+        fontSize: 20,
+        gravity: ToastGravity.TOP,
+        textColor: Colors.black,
+      );
+      Navigator.pushReplacementNamed(context, "LoginPage");
     } else {
-      print('Email inválido');
+      Fluttertoast.showToast(
+        msg: "Correo invalido",
+        backgroundColor: Colors.white,
+        fontSize: 20,
+        gravity: ToastGravity.TOP,
+        textColor: Colors.black,
+      );
     }
     //validar email
-  }
-
-  Widget _validar() {
-    return FloatingActionButton(
-      backgroundColor: Color.fromRGBO(0, 91, 160, 100),
-      child: Icon(Icons.send),
-      onPressed: () {
-        print('KT');
-        
-      },
-    );
   }
 }
