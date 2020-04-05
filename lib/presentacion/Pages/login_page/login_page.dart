@@ -229,7 +229,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Text(
           '¿Olvidaste tu contraseña?',
           style: TextStyle(
-            fontSize: 17,
+            fontSize: MediaQuery.of(context).size.height < 600 ? 14:17,
             color: Color.fromRGBO(32, 173, 244, 1),
           ),
         ),
@@ -272,7 +272,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future _autenticar(String email, String pass) async {
     try {
-      AuthResult result = await firebaseAuth.signInWithEmailAndPassword(
+      AuthResult result = await _auth.signInWithEmailAndPassword(
           email: email, password: pass);
       if (result != null) {
         FirebaseUser user = result.user;
@@ -292,7 +292,7 @@ class _LoginPageState extends State<LoginPage> {
       text: TextSpan(children: [
         TextSpan(
             text:
-                'Al hacer click en "inicio de sesión", estas aceptando nuestras  '),
+                'Al hacer click en "iniciar sesión", estas aceptando nuestras  '),
         TextSpan(
             text: 'Condiciones de servicio ',
             style: new TextStyle(color: Colors.blue),

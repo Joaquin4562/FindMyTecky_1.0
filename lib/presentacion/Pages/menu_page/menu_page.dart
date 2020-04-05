@@ -9,6 +9,7 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
         body: Container(
       width: MediaQuery.of(context).size.width,
@@ -28,9 +29,9 @@ class _MenuPageState extends State<MenuPage> {
                 Row(
                   children: <Widget>[
                     Expanded(
-                      flex: 3,
+                      flex: height < 600 ? 2:3,
                       child: ClipRRect(
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(20),
                           child: Image(image: AssetImage("assets/logo.png"),height: 130,)),
                     ),
                     Expanded(
@@ -48,7 +49,7 @@ class _MenuPageState extends State<MenuPage> {
             child: FadeAnimation(
                 1,
                 Container(
-                  height: MediaQuery.of(context).size.height - 400,
+                  height: MediaQuery.of(context).size.height < 600 ? 270:400,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.grey.withOpacity(0.2)),
@@ -57,6 +58,7 @@ class _MenuPageState extends State<MenuPage> {
                     children: <Widget>[
                       Text(
                         'Bienvenido a Find My Tecky!',
+                        textAlign: MediaQuery.of(context).size.height < 600 ? TextAlign.center : TextAlign.left,
                         style: TextStyle(fontSize: 26, color: Colors.white),
                       ),
                       Column(
