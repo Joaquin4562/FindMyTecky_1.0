@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 90),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 60),
                 child: FadeAnimation(
                     1,
                     Container(
@@ -84,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             _textSubHead(),
                             Padding(
-                              padding: EdgeInsets.only(top: 50),
+                              padding: EdgeInsets.only(top: 25),
                               child: Column(
                                 children: <Widget>[
                                   _inputCorreo(),

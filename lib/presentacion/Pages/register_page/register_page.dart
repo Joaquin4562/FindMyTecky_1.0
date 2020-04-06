@@ -46,7 +46,7 @@ class _RegisterPageState extends State<RegisterPage> {
         body: Builder(builder: (context) {
           return SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 60),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 50),
               child: FadeAnimation(
                   1,
                   Container(
@@ -70,7 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                           ),
                           SizedBox(
-                            height: 40,
+                            height: 20,
                           ),
                           Padding(
                             padding: EdgeInsets.all(15),
