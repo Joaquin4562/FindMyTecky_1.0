@@ -9,6 +9,7 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
         body: Container(
       width: MediaQuery.of(context).size.width,
@@ -28,16 +29,10 @@ class _MenuPageState extends State<MenuPage> {
                 Row(
                   children: <Widget>[
                     Expanded(
-                      flex: 3,
+                      flex: height < 600 ? 2:3,
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          height: 120,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage("assets/logo.png"))),
-                        ),
-                      ),
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image(image: AssetImage("assets/logo.png"),height: 130,)),
                     ),
                     Expanded(
                       flex: 4,
@@ -54,7 +49,7 @@ class _MenuPageState extends State<MenuPage> {
             child: FadeAnimation(
                 1,
                 Container(
-                  height: MediaQuery.of(context).size.height - 400,
+                  height: MediaQuery.of(context).size.height < 600 ? 270:400,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.grey.withOpacity(0.2)),
@@ -63,18 +58,13 @@ class _MenuPageState extends State<MenuPage> {
                     children: <Widget>[
                       Text(
                         'Bienvenido a Find My Tecky!',
+                        textAlign: MediaQuery.of(context).size.height < 600 ? TextAlign.center : TextAlign.left,
                         style: TextStyle(fontSize: 26, color: Colors.white),
                       ),
                       Column(
                         children: <Widget>[
                           _ingresarLog(context),
-                          Divider(
-                            height: 30,
-                            thickness: 2,
-                            color: Colors.white,
-                            indent: 20,
-                            endIndent: 20,
-                          ),
+                          _divider(),
                           _crearCuenta()
                         ],
                       )
@@ -115,6 +105,40 @@ class _MenuPageState extends State<MenuPage> {
         onPressed: () {
           Navigator.pushNamed(context, 'RegisterPage');
         },
+      ),
+    );
+  }
+  Widget _divider() {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        children: <Widget>[
+          SizedBox(
+            width: 20,
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Divider(
+                color: Colors.white,
+                thickness: 1,
+              ),
+            ),
+          ),
+          Text('or',style: TextStyle(color: Colors.white,fontSize: 15),),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Divider(
+                color: Colors.white,
+                thickness: 1,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+        ],
       ),
     );
   }
