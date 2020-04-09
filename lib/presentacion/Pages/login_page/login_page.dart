@@ -1,5 +1,5 @@
 import 'package:find_my_tecky_1_0/negocios/class/simple_animation.dart';
-import 'package:find_my_tecky_1_0/presentacion/Pages/menu_page/menu_page.dart';
+import 'package:find_my_tecky_1_0/presentacion/Pages/mapa_page/mapa_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -195,7 +195,7 @@ class _LoginPageState extends State<LoginPage> {
           String correo = _controllerEmail.text;
           
           bool _evaluarCorreo (String correo){
-            RegExp exp = new RegExp(r"^[a-z0-9!#$%&'+/=?^`{|}~-]+(?:\.[a-z0-9!#$%&'+/=?^`{|}~-]+)@(?:[a-z0-9](?:[a-z0-9-][a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
+            RegExp exp = new RegExp(r"^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$");
             return exp.hasMatch(correo);
           }
 
@@ -203,6 +203,7 @@ class _LoginPageState extends State<LoginPage> {
             _autenticar(_controllerEmail.text, _controllerPass.text);
           } else {
             Fluttertoast.showToast(msg: "Rellena los campos");
+            Navigator.pushReplacementNamed(context, 'MapaPage');
           }
         },
       ),
@@ -219,7 +220,7 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) {
-                return MenuPage();
+                return MapaPage();
                 },
               ),
             );
@@ -284,7 +285,7 @@ class _LoginPageState extends State<LoginPage> {
           email: email, password: pass);
       if (result != null) {
         FirebaseUser user = result.user;
-        Navigator.pushNamed(context, 'RecuperarPage');
+        Navigator.pushReplacementNamed(context, 'MapaPage');
         print(user.email);
       } else {
         Fluttertoast.showToast(msg: "error al iniciar sesión");

@@ -24,6 +24,7 @@ dependencies:
   cloud_firestore: ^0.13.4+2
   flutter_email_sender: ^3.0.1
   google_sign_in: ^4.0.4
+  google_maps_flutter:
   mailer: ^3.0.3
 
   firebase_auth: 
