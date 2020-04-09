@@ -348,7 +348,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   bool _evaluarCorreo(String correo) {
-    RegExp exp = new RegExp(r"^([a-z0-9_\.-]+)@itsmante\.edu\.mx$");
+    RegExp exp = new RegExp(r"^[a-z0-9!#$%&'+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'+/=?^_`{|}~-]+)@(?:[a-z0-9](?:[a-z0-9-][a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
     return exp.hasMatch(correo);
   }
 
