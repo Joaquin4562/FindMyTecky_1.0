@@ -191,7 +191,15 @@ class _LoginPageState extends State<LoginPage> {
         textColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         onPressed: () {
-          if (_controllerEmail.text != '' && _controllerPass.text != '') {
+          
+          String correo = _controllerEmail.text;
+          
+          bool _evaluarCorreo (String correo){
+            RegExp exp = new RegExp(r"^[a-z0-9!#$%&'+/=?^`{|}~-]+(?:\.[a-z0-9!#$%&'+/=?^`{|}~-]+)@(?:[a-z0-9](?:[a-z0-9-][a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
+            return exp.hasMatch(correo);
+          }
+
+          if (_evaluarCorreo(correo) != false && _controllerPass.text != '') {
             _autenticar(_controllerEmail.text, _controllerPass.text);
           } else {
             Fluttertoast.showToast(msg: "Rellena los campos");
