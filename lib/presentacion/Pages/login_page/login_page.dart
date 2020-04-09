@@ -203,7 +203,6 @@ class _LoginPageState extends State<LoginPage> {
             _autenticar(_controllerEmail.text, _controllerPass.text);
           } else {
             Fluttertoast.showToast(msg: "Rellena los campos");
-            Navigator.pushReplacementNamed(context, 'MapaPage');
           }
         },
       ),
