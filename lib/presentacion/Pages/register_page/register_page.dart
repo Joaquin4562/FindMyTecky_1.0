@@ -216,7 +216,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  _crearcuenta() {
+  /*_crearcuenta() {
     return RaisedButton(
       child: Text('Crea sesión'),
       elevation: (10),
@@ -227,7 +227,7 @@ class _RegisterPageState extends State<RegisterPage> {
         print('hola');
       },
     );
-  }
+  }*/
 
   Widget _textCondiciones() {
     return RichText(

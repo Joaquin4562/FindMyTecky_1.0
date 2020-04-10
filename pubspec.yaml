@@ -40,3 +40,9 @@ flutter:
   
   assets:
     - assets/
+
+  fonts:
+    - family: CM Sans Serif
+      fonts:
+       - asset: assets/fonts/cm_sans_serif_2012.ttf
+
