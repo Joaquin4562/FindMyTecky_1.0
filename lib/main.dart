@@ -2,6 +2,7 @@ import 'package:find_my_tecky_1_0/presentacion/Pages/login_page/login_page.dart'
 import 'package:find_my_tecky_1_0/presentacion/Pages/mapa_page/mapa_page.dart';
 import 'package:find_my_tecky_1_0/presentacion/Pages/menu_page/menu_page.dart';
 import 'package:find_my_tecky_1_0/presentacion/Pages/olvidar_page/olvidarcontra_page.dart';
+import 'package:find_my_tecky_1_0/presentacion/Pages/onboarding/onboarding.dart';
 import 'package:find_my_tecky_1_0/presentacion/Pages/register_page/register_page.dart';
 import 'package:find_my_tecky_1_0/presentacion/Pages/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
         'RegisterPage': (BuildContext context) => RegisterPage(),
         'RecuperarPage': (BuildContext context) => OlvidarcontraPage(),
         'MenuPage': (BuildContext context) => MenuPage(),
+        'OnBoarding' : (BuildContext context) => OnBoarding(),
         'MapaPage':(context)=>MapaPage()
       },
       title: 'FindMyTecky!',

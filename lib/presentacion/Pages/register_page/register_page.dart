@@ -247,7 +247,6 @@ class _RegisterPageState extends State<RegisterPage> {
       color: Colors.white,
     );
   }
-
   Widget _textCondiciones() {
     return RichText(
       textAlign: TextAlign.center,
