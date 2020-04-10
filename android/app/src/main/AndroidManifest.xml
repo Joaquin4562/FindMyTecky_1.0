@@ -7,8 +7,11 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="find_my_tecky_1_0"
+        android:label="Find My Tecky"
         android:icon="@mipmap/ic_launcher">
+        <meta-data 
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="API-KEY HERE"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -26,5 +29,6 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        
     </application>
 </manifest>
