@@ -62,7 +62,7 @@ class _OnBoardingState extends State<OnBoarding> {
                 Container(
                   alignment: Alignment.centerRight,
                   child: FlatButton(
-                    onPressed: () => print('Skip'),
+                    onPressed: () => Navigator.pushReplacementNamed(context, 'MenuPage'),
                     child: Text(
                       'Skip',
                       style: TextStyle(
@@ -216,7 +216,7 @@ class _OnBoardingState extends State<OnBoarding> {
               width: double.infinity,
               color: Colors.white,
               child: GestureDetector(
-                onTap: () => print('Get started'),
+                onTap: () => Navigator.pushReplacementNamed(context, 'LoginPage'),
                 child: Center(
                   child: Padding(
                     padding: EdgeInsets.only(bottom: 30.0),

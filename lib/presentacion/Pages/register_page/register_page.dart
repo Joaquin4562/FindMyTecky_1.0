@@ -321,7 +321,6 @@ class _RegisterPageState extends State<RegisterPage> {
     try {
       await firebaseAuth.createUserWithEmailAndPassword(
           email: correoController.text, password: password1Controller.text);
-      print("si");
       await databaseReference.collection("Usuarios").add({
         'apellido': apellidoController.text,
         'contraseña': password1Controller.text,
