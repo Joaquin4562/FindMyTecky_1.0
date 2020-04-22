@@ -195,7 +195,7 @@ class _LoginPageState extends State<LoginPage> {
           String correo = _controllerEmail.text;
           
           bool _evaluarCorreo (String correo){
-            RegExp exp = new RegExp(r"^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$");
+            RegExp exp = new RegExp(r"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
             return exp.hasMatch(correo);
           }
 
