@@ -317,6 +317,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  //Metodo que se encarga de registrar al usuario en la BD
   registrar(context) async {
     try {
       await firebaseAuth.createUserWithEmailAndPassword(
@@ -336,19 +337,22 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  //Metodo que verifica la correcta escritura del nombre y del apellido
   bool _evaluarCadena(String cadena)
   {
     RegExp exp = new RegExp(r"^([A-Z]{1}[a-z]+[ ]?){1,2}$");
     return exp.hasMatch(cadena);
   }
 
+  //Metodo que verifica la correcta escritura de la password
   bool _evaluarPassword(String password) {
     RegExp exp = new RegExp(r"^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8,16}$");
     return exp.hasMatch(password);
   }
 
+  //Metodo que verifica la correcta escritura del correo
   bool _evaluarCorreo(String correo) {
-    RegExp exp = new RegExp(r"^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$");
+    RegExp exp = new RegExp(r"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
     return exp.hasMatch(correo);
   }
 

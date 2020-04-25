@@ -86,9 +86,14 @@ class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
     );
   }
 
+  bool _evaluarCorreo(String correo) {
+    RegExp exp = new RegExp(r"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
+    return exp.hasMatch(correo);
+  }
+
   recoverPass() async {
     Usuario user = compareEmail(email.text);
-    if (user != null) {
+    if (user != null && _evaluarCorreo(email.text) == true) {
       constructEmail("${user.nombre} ${user.apellidos}", user.correo);
       Fluttertoast.showToast(
         msg: "Se envio un Correo",
@@ -98,7 +103,18 @@ class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
         textColor: Colors.black,
       );
       Navigator.pushReplacementNamed(context, "LoginPage");
-    } else {
+    }
+    else if(_evaluarCorreo(email.text) == false)
+    {
+      Fluttertoast.showToast(
+        msg: "Formato de correo invalido",
+        backgroundColor: Colors.white,
+        fontSize: 20,
+        gravity: ToastGravity.TOP,
+        textColor: Colors.black,
+      );
+    } 
+    else {
       Fluttertoast.showToast(
         msg: "Correo invalido",
         backgroundColor: Colors.white,
