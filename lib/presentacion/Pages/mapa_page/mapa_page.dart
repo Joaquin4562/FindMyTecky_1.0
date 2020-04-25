@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -41,7 +42,13 @@ class _MapaPageState extends State<MapaPage> {
                     'Rotaria',
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    FirebaseAdMob.instance.initialize(
+                        appId: "ca-app-pub-2994316306593080~1182086820");
+                    myInterstitial
+                      ..listener
+                      ..load(); 
+                  },
                   trailing: Icon(
                     Icons.location_on,
                     color: Colors.white,
@@ -55,7 +62,13 @@ class _MapaPageState extends State<MapaPage> {
                     'Centro',
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    FirebaseAdMob.instance.initialize(
+                        appId: "ca-app-pub-2994316306593080~1182086820");
+                    myInterstitial
+                      ..listener
+                      ..load();
+                  },
                   trailing: Icon(
                     Icons.location_on,
                     color: Colors.white,
@@ -69,7 +82,13 @@ class _MapaPageState extends State<MapaPage> {
                     'Linares',
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    FirebaseAdMob.instance.initialize(
+                        appId: "ca-app-pub-2994316306593080~1182086820");
+                    myInterstitial
+                      ..listener
+                      ..load();
+                  },
                   trailing: Icon(
                     Icons.location_on,
                     color: Colors.white,
@@ -127,4 +146,22 @@ class _MapaPageState extends State<MapaPage> {
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
   }
+
+  static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    keywords: <String>['flutterio', 'beautiful apps'],
+    contentUrl: 'https://flutter.io',
+    birthday: DateTime.now(),
+    childDirected: false,
+    designedForFamilies: false,
+    gender:
+        MobileAdGender.male, // or MobileAdGender.female, MobileAdGender.unknown
+    testDevices: <String>[], // Android emulators are considered test devices
+  );
+  InterstitialAd myInterstitial = InterstitialAd(
+  adUnitId: "ca-app-pub-2994316306593080/5257897354",
+  targetingInfo: targetingInfo,
+  listener: (MobileAdEvent event) {
+    print("InterstitialAd event is $event");
+  },
+);
 }

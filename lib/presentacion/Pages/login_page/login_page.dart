@@ -1,5 +1,6 @@
 import 'package:find_my_tecky_1_0/negocios/class/simple_animation.dart';
 import 'package:find_my_tecky_1_0/presentacion/Pages/mapa_page/mapa_page.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -13,33 +14,34 @@ class LoginPage extends StatefulWidget {
 }
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
-final GoogleSignIn googleSignIn = GoogleSignIn ();
- 
-Future <String> signInWithGoogle () async {
+final GoogleSignIn googleSignIn = GoogleSignIn();
+
+Future<String> signInWithGoogle() async {
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-  final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
+  final GoogleSignInAuthentication googleSignInAuthentication =
+      await googleSignInAccount.authentication;
 
   final AuthCredential credential = GoogleAuthProvider.getCredential(
-    accessToken: googleSignInAuthentication.accessToken, 
+    accessToken: googleSignInAuthentication.accessToken,
     idToken: googleSignInAuthentication.idToken,
-    ); 
+  );
 
-    final AuthResult authResult = await _auth.signInWithCredential(credential);
-    final FirebaseUser user = authResult.user;
+  final AuthResult authResult = await _auth.signInWithCredential(credential);
+  final FirebaseUser user = authResult.user;
 
-    assert (!user.isAnonymous);
-    assert (await user.getIdToken() != null);
+  assert(!user.isAnonymous);
+  assert(await user.getIdToken() != null);
 
-    final FirebaseUser currentUser  = await _auth.currentUser();
-    assert (user.uid == currentUser.uid);
+  final FirebaseUser currentUser = await _auth.currentUser();
+  assert(user.uid == currentUser.uid);
 
-    return 'signInWithGoogle succeeded: $user';
+  return 'signInWithGoogle succeeded: $user';
 }
 
-void signOutGoogle () async {
+void signOutGoogle() async {
   await googleSignIn.signOut();
 
-  print ('User sign out');
+  print('User sign out');
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -191,11 +193,11 @@ class _LoginPageState extends State<LoginPage> {
         textColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         onPressed: () {
-          
           String correo = _controllerEmail.text;
-          
-          bool _evaluarCorreo (String correo){
-            RegExp exp = new RegExp(r"^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$");
+
+          bool _evaluarCorreo(String correo) {
+            RegExp exp = new RegExp(
+                r"^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$");
             return exp.hasMatch(correo);
           }
 
@@ -215,21 +217,40 @@ class _LoginPageState extends State<LoginPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 40),
         onPressed: () {
-          signInWithGoogle().whenComplete((){
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) {
-                return MapaPage();
-                },
-              ),
-            );
-          });
-        });
+      signInWithGoogle().whenComplete(() {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return MapaPage();
+            },
+          ),
+        );
+      });
+    });
   }
+
+  static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    keywords: <String>['flutterio', 'beautiful apps'],
+    contentUrl: 'https://flutter.io',
+    birthday: DateTime.now(),
+    childDirected: false,
+    designedForFamilies: false,
+    gender:
+        MobileAdGender.male, // or MobileAdGender.female, MobileAdGender.unknown
+    testDevices: <String>[], // Android emulators are considered test devices
+  );
+  BannerAd myBanner = BannerAd(
+    adUnitId: "ca-app-pub-2994316306593080/5257897354",
+    size: AdSize.smartBanner,
+    targetingInfo: targetingInfo,
+    listener: (MobileAdEvent event) {
+      print("BannerAd event is $event");
+    },
+  );
 
   Widget _olvidarcontrasena() {
     return Padding(
-      padding: const EdgeInsets.only(right: 140,top: 10),
+      padding: const EdgeInsets.only(right: 140, top: 10),
       child: GestureDetector(
         onTap: () {
           Navigator.pushNamed(context, 'RecuperarPage');
@@ -237,7 +258,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Text(
           '¿Olvidaste tu contraseña?',
           style: TextStyle(
-            fontSize: MediaQuery.of(context).size.height < 600 ? 14:17,
+            fontSize: MediaQuery.of(context).size.height < 600 ? 14 : 17,
             color: Color.fromRGBO(32, 173, 244, 1),
           ),
         ),
@@ -280,8 +301,10 @@ class _LoginPageState extends State<LoginPage> {
 
   Future _autenticar(String email, String pass) async {
     try {
-      AuthResult result = await _auth.signInWithEmailAndPassword(
-          email: email, password: pass);
+              Navigator.pushReplacementNamed(context, 'MapaPage');
+
+      AuthResult result =
+          await _auth.signInWithEmailAndPassword(email: email, password: pass);
       if (result != null) {
         FirebaseUser user = result.user;
         Navigator.pushReplacementNamed(context, 'MapaPage');
