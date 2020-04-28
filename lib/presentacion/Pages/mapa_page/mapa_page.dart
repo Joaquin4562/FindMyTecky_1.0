@@ -12,7 +12,8 @@ class MapaPage extends StatefulWidget {
 
 class _MapaPageState extends State<MapaPage> {
   CameraPosition _initialPosition =
-      CameraPosition(target: LatLng(26.8206, 30.8025));
+      CameraPosition(target: LatLng(22.7433, -98.9747 ),
+      zoom: 12 );
   Completer<GoogleMapController> _controller = Completer();
   @override
   Widget build(BuildContext context) {
