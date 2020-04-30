@@ -228,25 +228,6 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-    keywords: <String>['flutterio', 'beautiful apps'],
-    contentUrl: 'https://flutter.io',
-    birthday: DateTime.now(),
-    childDirected: false,
-    designedForFamilies: false,
-    gender:
-        MobileAdGender.male, // or MobileAdGender.female, MobileAdGender.unknown
-    testDevices: <String>[], // Android emulators are considered test devices
-  );
-  BannerAd myBanner = BannerAd(
-    adUnitId: "ca-app-pub-2994316306593080/5257897354",
-    size: AdSize.smartBanner,
-    targetingInfo: targetingInfo,
-    listener: (MobileAdEvent event) {
-      print("BannerAd event is $event");
-    },
-  );
-
   Widget _olvidarcontrasena() {
     return Padding(
       padding: const EdgeInsets.only(right: 140, top: 10),
@@ -300,8 +281,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future _autenticar(String email, String pass) async {
     try {
-              Navigator.pushReplacementNamed(context, 'MapaPage');
-
+      Navigator.pushReplacementNamed(context, 'MapaPage');
       AuthResult result =
           await _auth.signInWithEmailAndPassword(email: email, password: pass);
       if (result != null) {
@@ -315,7 +295,6 @@ class _LoginPageState extends State<LoginPage> {
       Fluttertoast.showToast(msg: e.message);
     }
   }
-
   Widget _textCondiciones() {
     return RichText(
       textAlign: TextAlign.center,
