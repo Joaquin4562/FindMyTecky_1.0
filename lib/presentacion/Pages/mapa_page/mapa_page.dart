@@ -1,12 +1,20 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:find_my_tecky_1_0/negocios/util/admob_utils.dart';
+import 'package:find_my_tecky_1_0/presentacion/Pages/login_page/login_page.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:location/location.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapaPage extends StatefulWidget {
   MapaPage({Key key}) : super(key: key);
+  final LatLng estudianteUsuario = LatLng (22.7552224, -98.9742958);
+  final LatLng choferTecky = LatLng(22.7523476, -98.9709782);
+  final LatLng locationMante = LatLng(22.7433, -98.9747);
 
   @override
   _MapaPageState createState() => _MapaPageState();
@@ -14,20 +22,38 @@ class MapaPage extends StatefulWidget {
 
 class _MapaPageState extends State<MapaPage> {
   InterstitialAd newTripAd;
+  
+
+  GoogleMapController _mapController;
+  Location _locationTracker = Location();
+  Location location = new Location();
+  bool _serviceEnabled;
+  PermissionStatus _permissionGranted;
+  LocationData _locationData;
+  Marker marker;
+  Circle circle;
+  StreamSubscription _locationSubscription;
+  BitmapDescriptor markerUsuarioIcon;
+
   @override
   void initState() { 
     super.initState();
     FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
     newTripAd= getNewTripInterstitialAd()..load();
-      
-    
   }
-  CameraPosition _initialPosition =
-      CameraPosition(target: LatLng(22.7433, -98.9747 ),
-      zoom: 12 );
+  
   Completer<GoogleMapController> _controller = Completer();
   @override
   Widget build(BuildContext context) {
+
+      floatingActionButton:  FloatingActionButton (
+              child: Icon(Icons.nature),
+              elevation: 30,
+              onPressed: () {
+                _centerView();
+                }
+              );
+
     return Scaffold(
       drawer: Drawer(
         elevation: 10,
@@ -105,7 +131,9 @@ class _MapaPageState extends State<MapaPage> {
                         'Cerrar sesión',
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        signOutGoogle();
+                      },
                       trailing: Icon(
                         Icons.exit_to_app,
                         color: Colors.white,
@@ -121,8 +149,15 @@ class _MapaPageState extends State<MapaPage> {
       body: Stack(
         children: <Widget>[
           GoogleMap(
-            initialCameraPosition: _initialPosition,
-            onMapCreated: _onMapCreated,
+            mapType: MapType.normal,
+            initialCameraPosition : CameraPosition(
+            target: widget.locationMante,
+            zoom: 5, 
+            ), 
+            markers: _markersUsuarioChofer(), 
+            onMapCreated: _onMapaCreated,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
           ),
           Positioned(
             child: AppBar(
@@ -143,7 +178,55 @@ class _MapaPageState extends State<MapaPage> {
     );
   }
 
-  void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
-  }
+              void iconoMarker() async {
+                markerUsuarioIcon = await BitmapDescriptor.fromAssetImage(ImageConfiguration(devicePixelRatio: 3.0), 'assets/iconCR.png');
+              }
+
+              Set<Marker> _markersUsuarioChofer ()  {
+              var temporal = Set<Marker>();
+
+              temporal.add(
+              Marker(
+              markerId: MarkerId("PuntoEstudiante"),
+              icon: markerUsuarioIcon,
+              position: widget.estudianteUsuario,
+              infoWindow: InfoWindow(title: "Posición Actual")
+              ));
+
+               temporal.add(Marker(
+                markerId: MarkerId("puntoTecky"),
+                position: widget.choferTecky,
+              infoWindow: InfoWindow(title: "TECKY")
+              ));
+              return temporal;
+             
+      }
+
+              void _onMapaCreated (GoogleMapController controller){
+              setState(() {
+                _mapController = controller;
+                
+                _centerView();
+              });
+            }
+
+//Método que se ajusta para que se vean los 2 puntos
+            _centerView () async{
+              await _mapController.getVisibleRegion();
+//Cálculo los 4 puntos cardinales
+            var posicionIzquierda = min(widget.estudianteUsuario.latitude, widget.choferTecky.latitude);
+            var posicionDerecha = max(widget.estudianteUsuario.latitude, widget.choferTecky.latitude);
+            var posicionArriba = max(widget.estudianteUsuario.longitude, widget.choferTecky.longitude);
+            var posicionAbajo = min(widget.estudianteUsuario.longitude, widget.choferTecky.longitude);
+            
+            var bounds = LatLngBounds(
+              southwest: LatLng(posicionIzquierda, posicionAbajo),
+              northeast: LatLng(posicionDerecha, posicionArriba)
+              );
+            var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
+              _mapController.animateCamera(cameraUpdate);
+            }
+
+
+  
 }
