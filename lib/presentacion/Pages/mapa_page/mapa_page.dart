@@ -29,6 +29,7 @@ class _MapaPageState extends State<MapaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: null),
       drawer: Drawer(
         elevation: 10,
         child: Container(
