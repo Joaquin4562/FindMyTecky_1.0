@@ -31,6 +31,9 @@ dependencies:
   fluttertoast: ^4.0.0
   cupertino_icons: ^0.1.2
   firebase_admob: ^0.9.3+2
+
+  location: 
+  geolocator: ^5.3.1
   
 dev_dependencies:
   flutter_test:
