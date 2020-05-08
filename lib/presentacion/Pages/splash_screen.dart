@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:find_my_tecky_1_0/negocios/util/preferencias_de_usuario.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -31,26 +32,24 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-             Container(
-                  width: width-160,
-                  height: 250,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50), 
-                    image: DecorationImage(
-                      image: AssetImage("assets/logo.png"),
-                      fit: BoxFit.cover
-                    )
-                  ),
-                ),
-                SizedBox(height: 50,),
+            Container(
+              width: width - 160,
+              height: 250,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  image: DecorationImage(
+                      image: AssetImage("assets/logo.png"), fit: BoxFit.cover)),
+            ),
+            SizedBox(
+              height: 50,
+            ),
             Text(
               "Find My Tecky",
               style: TextStyle(
-                color: Colors.white,
-                fontSize: 50,
-                fontWeight: FontWeight.bold
-              ),
-              )
+                  color: Colors.white,
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold),
+            )
           ],
         ),
       ),
@@ -58,6 +57,15 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _cambiarPantalla() {
-    Navigator.of(context).pushReplacementNamed('OnBoarding');
+    final prefs = PreferenciasUsuario();
+    if (prefs.isFristUser) {
+      Navigator.of(context).pushReplacementNamed('OnBoarding');
+    } else {
+      if (!prefs.isLogged) {
+        Navigator.of(context).pushReplacementNamed('MenuPage');
+      } else {
+        Navigator.of(context).pushReplacementNamed('MapaPage');
+      }
+    }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:find_my_tecky_1_0/negocios/util/preferencias_de_usuario.dart';
 import 'package:find_my_tecky_1_0/presentacion/utilities/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,6 +38,7 @@ class _OnBoardingState extends State<OnBoarding> {
 
   @override
   Widget build(BuildContext context) {
+    final height =MediaQuery.of(context).size.height;
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
@@ -62,7 +64,11 @@ class _OnBoardingState extends State<OnBoarding> {
                 Container(
                   alignment: Alignment.centerRight,
                   child: FlatButton(
-                    onPressed: () => Navigator.pushReplacementNamed(context, 'MenuPage'),
+                    onPressed: () {
+                      final prefs = PreferenciasUsuario();
+                      prefs.isFristUser = false;
+                      Navigator.pushReplacementNamed(context, 'MenuPage');
+                    },
                     child: Text(
                       'Skip',
                       style: TextStyle(
@@ -73,7 +79,7 @@ class _OnBoardingState extends State<OnBoarding> {
                   ),
                 ),
                 Container(
-                  height: 600.0,
+                  height: height < 600 ? 400:600,
                   child: PageView(
                     physics: ClampingScrollPhysics(),
                     controller: _pageController,
@@ -93,14 +99,14 @@ class _OnBoardingState extends State<OnBoarding> {
                                 image: AssetImage(
                                   'assets/marker.png',
                                 ),
-                                height: 300.0,
-                                width: 300.0,
+                                height: height < 600 ? 100:300,
+                                width: height < 600 ? 100:300,
                               ),
                             ),
                             SizedBox(height: 30.0),
                             Text(
                               '¿Donde se encuentra?',
-                              style: kSubtitleStyle,
+                              style: kTitleStyle,
                             ),
                             SizedBox(height: 15.0),
                             Text(
@@ -120,8 +126,8 @@ class _OnBoardingState extends State<OnBoarding> {
                                 image: AssetImage(
                                   'assets/not.png',
                                 ),
-                                height: 300.0,
-                                width: 300.0,
+                                height: height < 600 ? 100:300,
+                                width: height < 600 ? 100:300,
                               ),
                             ),
                             SizedBox(height: 30.0),
@@ -147,8 +153,8 @@ class _OnBoardingState extends State<OnBoarding> {
                                 image: AssetImage(
                                   'assets/bus.png',
                                 ),
-                                height: 300.0,
-                                width: 300.0,
+                                height: height < 600 ? 100:300,
+                                width: height < 600 ? 100:300,
                               ),
                             ),
                             SizedBox(height: 30.0),
@@ -156,7 +162,7 @@ class _OnBoardingState extends State<OnBoarding> {
                               'Una nueva experancia\npara tomar el transporte',
                               style: kTitleStyle,
                             ),
-                            SizedBox(height: 15.0),
+                            SizedBox(height: height < 600 ? 5.0:15.0),
                             Text(
                               'Marca tus paradas de transporte para recibir las notificaciones antes mencionadas',
                               style: kSubtitleStyle,
@@ -212,14 +218,18 @@ class _OnBoardingState extends State<OnBoarding> {
       ),
       bottomSheet: _currentPage == _numPages - 1
           ? Container(
-              height: 100.0,
+              height: height < 600 ? 80:100,
               width: double.infinity,
               color: Colors.white,
               child: GestureDetector(
-                onTap: () => Navigator.pushReplacementNamed(context, 'LoginPage'),
+                onTap: () {
+                  final prefs = PreferenciasUsuario();
+                  prefs.isFristUser = false;
+                  Navigator.pushReplacementNamed(context, 'MenuPage');
+                },
                 child: Center(
                   child: Padding(
-                    padding: EdgeInsets.only(bottom: 30.0),
+                    padding: EdgeInsets.only(bottom: 20.0),
                     child: Text(
                       'Get started',
                       style: TextStyle(

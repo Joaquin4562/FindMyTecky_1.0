@@ -1,4 +1,5 @@
 import 'package:find_my_tecky_1_0/negocios/class/simple_animation.dart';
+import 'package:find_my_tecky_1_0/negocios/util/preferencias_de_usuario.dart';
 import 'package:find_my_tecky_1_0/presentacion/Pages/mapa_page/mapa_page.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -193,10 +194,13 @@ class _LoginPageState extends State<LoginPage> {
         textColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         onPressed: () {
+          //PRUEBAS
+          //Navigator.pushReplacementNamed(context, 'MapaPage');
           String correo = _controllerEmail.text;
-          
-          bool _evaluarCorreo (String correo){
-            RegExp exp = new RegExp(r"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
+
+          bool _evaluarCorreo(String correo) {
+            RegExp exp = new RegExp(
+                r"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
             return exp.hasMatch(correo);
           }
 
@@ -281,10 +285,11 @@ class _LoginPageState extends State<LoginPage> {
 
   Future _autenticar(String email, String pass) async {
     try {
-      Navigator.pushReplacementNamed(context, 'MapaPage');
       AuthResult result =
           await _auth.signInWithEmailAndPassword(email: email, password: pass);
       if (result != null) {
+        final prefs = PreferenciasUsuario();
+        prefs.isLogged = true;
         FirebaseUser user = result.user;
         Navigator.pushReplacementNamed(context, 'MapaPage');
         print(user.email);
@@ -295,6 +300,7 @@ class _LoginPageState extends State<LoginPage> {
       Fluttertoast.showToast(msg: e.message);
     }
   }
+
   Widget _textCondiciones() {
     return RichText(
       textAlign: TextAlign.center,
