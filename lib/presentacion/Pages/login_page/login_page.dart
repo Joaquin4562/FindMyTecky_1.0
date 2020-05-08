@@ -195,7 +195,7 @@ class _LoginPageState extends State<LoginPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         onPressed: () {
           //PRUEBAS
-          //Navigator.pushReplacementNamed(context, 'MapaPage');
+          Navigator.pushReplacementNamed(context, 'MapaPage');
           String correo = _controllerEmail.text;
 
           bool _evaluarCorreo(String correo) {
