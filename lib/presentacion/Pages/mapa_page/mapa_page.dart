@@ -19,24 +19,30 @@ class MapaPage extends StatefulWidget {
 }
 
 class _MapaPageState extends State<MapaPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   InterstitialAd newTripAd;
   LatLng locationMante = LatLng(22.7433, -98.9747);
   GoogleMapController _mapController;
   Location location = new Location();
-  Marker marker;
-  Circle circle;
+  bool _addMarkerEnabled = false;
+  var _markers = Set<Marker>();
   BitmapDescriptor markerUsuarioIcon;
+  BitmapDescriptor _markerParada;
+  BitmapDescriptor _busMarker;
 
   @override
   void initState() {
     super.initState();
     FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
-    newTripAd = getNewTripInterstitialAd()..load();
+    _markersUsuarioChofer();
+    markerParada();
+    iconoMarkerBus();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.nature),
           elevation: 30,
@@ -80,6 +86,7 @@ class _MapaPageState extends State<MapaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                   onTap: () {
+                    newTripAd = getNewTripInterstitialAd()..load();
                     newTripAd
                       ..load()
                       ..show(
@@ -101,6 +108,7 @@ class _MapaPageState extends State<MapaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                   onTap: () {
+                    newTripAd = getNewTripInterstitialAd()..load();
                     newTripAd
                       ..load()
                       ..show(
@@ -122,6 +130,7 @@ class _MapaPageState extends State<MapaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                   onTap: () {
+                    newTripAd = getNewTripInterstitialAd()..load();
                     newTripAd
                       ..load()
                       ..show(
@@ -132,6 +141,44 @@ class _MapaPageState extends State<MapaPage> {
                   trailing: Icon(
                     Icons.location_on,
                     color: Colors.white,
+                  ),
+                ),
+                Divider(
+                  color: Colors.white,
+                ),
+                ListTile(
+                  title: Text(
+                    'Añadir Parada',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                  onTap: () {
+                    newTripAd
+                      ..load()
+                      ..show(
+                          anchorOffset: 0.0,
+                          anchorType: AnchorType.bottom,
+                          horizontalCenterOffset: 0.0);
+                    _addMarkerEnabled = true;
+                    showDialog(
+                        context: _scaffoldKey.currentContext,
+                        builder: (context) {
+                          return AlertDialog(
+                            actions: <Widget>[
+                              FlatButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Aceptar'))
+                            ],
+                            title: Text('AVISO'),
+                            content: Text(
+                                'Para añadir una parada selecciona un lugar en el mapa'),
+                          );
+                        });
+                  },
+                  trailing: Icon(
+                    Icons.add_location,
+                    color: Colors.amber,
                   ),
                 ),
                 Divider(
@@ -171,12 +218,13 @@ class _MapaPageState extends State<MapaPage> {
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
                   child: GoogleMap(
+                    onTap: _addMarker,
                     mapType: MapType.normal,
                     initialCameraPosition: CameraPosition(
                       target: locationMante,
                       zoom: 6,
                     ),
-                    markers: _markersUsuarioChofer(),
+                    markers: _markers,
                     onMapCreated: _onMapaCreated,
                     gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
                       new Factory<OneSequenceGestureRecognizer>(
@@ -191,25 +239,28 @@ class _MapaPageState extends State<MapaPage> {
     );
   }
 
-  void iconoMarker() async {
-    markerUsuarioIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 3.0), 'assets/iconCR.png');
+  void iconoMarkerBus() async {
+    _busMarker = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(devicePixelRatio: 3.0), 'assets/marker_parada.png');
   }
 
-  Set<Marker> _markersUsuarioChofer() {
-    var temporal = Set<Marker>();
+  void markerParada() async {
+    _markerParada = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(devicePixelRatio: 5.0), 'assets/marker_parada.png');
+  }
 
-    temporal.add(Marker(
+  void _markersUsuarioChofer() {
+    _markers.add(Marker(
         markerId: MarkerId("PuntoEstudiante"),
         icon: markerUsuarioIcon,
         position: widget.estudianteUsuario,
         infoWindow: InfoWindow(title: "Posición Actual")));
 
-    temporal.add(Marker(
+    _markers.add(Marker(
         markerId: MarkerId("puntoTecky"),
         position: widget.choferTecky,
+        icon: _busMarker,
         infoWindow: InfoWindow(title: "TECKY")));
-    return temporal;
   }
 
   void _onMapaCreated(GoogleMapController controller) {
@@ -237,5 +288,21 @@ class _MapaPageState extends State<MapaPage> {
         northeast: LatLng(posicionDerecha, posicionArriba));
     var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
     _mapController.animateCamera(cameraUpdate);
+  }
+
+  void _addMarker(LatLng latLngParada) {
+    if (_addMarkerEnabled) {
+      LatLng _parada = latLngParada;
+      setState(() {
+        _markers.add(Marker(
+            markerId: MarkerId('parada'),
+            position: _parada,
+            icon: _markerParada,
+            infoWindow: InfoWindow(title: 'PARADA')));
+        _addMarkerEnabled = false;
+        //Reactiva la publicidad
+        newTripAd = getNewTripInterstitialAd()..load();
+      });
+    }
   }
 }
