@@ -4,14 +4,14 @@ import 'package:firebase_admob/firebase_admob.dart';
 
 String getApplicationId(){
   if(Platform.isAndroid){
-    return "ca-app-pub-2994316306593080~1182086820";
+    return "ca-app-pub-9563446058997293~1576223510";
   }else{
     return "not-id";
   }
 }
 String getInstertitialAd(){
   if(Platform.isAndroid){
-    return "ca-app-pub-1071729557629592/7057192049";
+    return "ca-app-pub-9563446058997293/92869071";
   }else{
     return "not-id";
   }

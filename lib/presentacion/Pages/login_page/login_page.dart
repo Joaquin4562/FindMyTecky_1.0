@@ -1,7 +1,6 @@
 import 'package:find_my_tecky_1_0/negocios/class/simple_animation.dart';
 import 'package:find_my_tecky_1_0/negocios/util/preferencias_de_usuario.dart';
 import 'package:find_my_tecky_1_0/presentacion/Pages/mapa_page/mapa_page.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -195,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         onPressed: () {
           //PRUEBAS
-          Navigator.pushReplacementNamed(context, 'MapaPage');
+          // Navigator.pushReplacementNamed(context, 'MapaPage');
           String correo = _controllerEmail.text;
 
           bool _evaluarCorreo(String correo) {
