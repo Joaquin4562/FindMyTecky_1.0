@@ -320,7 +320,7 @@ class _RegisterPageState extends State<RegisterPage> {
   //Metodo que se encarga de registrar al usuario en la BD
   registrar(context) async {
     try {
-      await firebaseAuth.createUserWithEmailAndPassword(
+       await firebaseAuth.createUserWithEmailAndPassword(
           email: correoController.text, password: password1Controller.text);
       await databaseReference.collection("Usuarios").add({
         'apellido': apellidoController.text,

@@ -1,79 +1,42 @@
 {
   "project_info": {
-    "project_number": "431646030853",
-    "firebase_url": "https://findmytecky-164d1.firebaseio.com",
-    "project_id": "findmytecky-164d1",
-    "storage_bucket": "findmytecky-164d1.appspot.com"
+    "project_number": "681504690078",
+    "firebase_url": "https://findmytecky-50bcf.firebaseio.com",
+    "project_id": "findmytecky-50bcf",
+    "storage_bucket": "findmytecky-50bcf.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:431646030853:android:ae32784edb5d7cd503706c",
+        "mobilesdk_app_id": "1:681504690078:android:644193bf7662affeabd08f",
         "android_client_info": {
           "package_name": "com.example.find_my_tecky_1_0"
         }
       },
       "oauth_client": [
         {
-          "client_id": "431646030853-9ccaotku1r529ava4fqq5mhtppsbjrmd.apps.googleusercontent.com",
+          "client_id": "681504690078-na1eqv2f5aup425ob29ovab0lppfi1e9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.find_my_tecky_1_0",
-            "certificate_hash": "5a4e21b57f372cd59ab41227b7f7e09e72031994"
+            "certificate_hash": "eaec7cae36d5a0ed6a1fa544eb62907455f85c94"
           }
         },
         {
-          "client_id": "431646030853-nrjc1k7m38lo0oad66kbd45h3u1fnqeh.apps.googleusercontent.com",
+          "client_id": "681504690078-o5i06ol7fs2om4ujq57l7ku1742lo4sl.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDwkVfegK2LZvGqOHFkMuZEf8Qy3jXqWLU"
+          "current_key": "AIzaSyBQc63-YnebIOrTj5bqYIIfBh9R-GA7z94"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "431646030853-nrjc1k7m38lo0oad66kbd45h3u1fnqeh.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:431646030853:android:d21d0e917f53526103706c",
-        "android_client_info": {
-          "package_name": "com.example.fmt_choferes"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "431646030853-g60hblupe08gbev5qsm1afjblvbjnijt.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.fmt_choferes",
-            "certificate_hash": "65ef33adbcfb60d90c75769f5817e8c36a719b18"
-          }
-        },
-        {
-          "client_id": "431646030853-nrjc1k7m38lo0oad66kbd45h3u1fnqeh.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDwkVfegK2LZvGqOHFkMuZEf8Qy3jXqWLU"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "431646030853-nrjc1k7m38lo0oad66kbd45h3u1fnqeh.apps.googleusercontent.com",
+              "client_id": "681504690078-o5i06ol7fs2om4ujq57l7ku1742lo4sl.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
