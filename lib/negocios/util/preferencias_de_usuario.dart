@@ -1,4 +1,5 @@
 
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferenciasUsuario {
@@ -28,4 +29,11 @@ class PreferenciasUsuario {
   set isFristUser(bool value){
     _prefs.setBool('isFristUser', value);
   }
+  get documentUserID{
+    return _prefs.getString('documentID') ?? '';
+  }
+  set documentUserID(String id){
+    _prefs.setString('documentID', id);
+  }
+
 }

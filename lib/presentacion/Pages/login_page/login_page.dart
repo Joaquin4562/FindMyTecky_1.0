@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:find_my_tecky_1_0/negocios/class/simple_animation.dart';
 import 'package:find_my_tecky_1_0/negocios/util/preferencias_de_usuario.dart';
 import 'package:find_my_tecky_1_0/presentacion/Pages/mapa_page/mapa_page.dart';
@@ -48,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
   //String  _email = '';
   bool _isObscure = true;
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  Firestore _firestoreReference = Firestore.instance;
   TextEditingController _controllerEmail = new TextEditingController();
   TextEditingController _controllerPass = new TextEditingController();
 
@@ -290,6 +292,15 @@ class _LoginPageState extends State<LoginPage> {
         final prefs = PreferenciasUsuario();
         prefs.isLogged = true;
         FirebaseUser user = result.user;
+        _firestoreReference
+            .collection('Usuarios')
+            .getDocuments()
+            .then((value) => value.documents.forEach((element) {
+                  if (element.data.values.contains(email)) {
+                    prefs.documentUserID = element.documentID;
+                    print(prefs.documentUserID);
+                  }
+                }));
         Navigator.pushReplacementNamed(context, 'MapaPage');
         print(user.email);
       } else {

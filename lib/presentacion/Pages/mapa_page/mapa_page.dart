@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:find_my_tecky_1_0/negocios/util/preferencias_de_usuario.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,8 @@ class MapaPage extends StatefulWidget {
 class _MapaPageState extends State<MapaPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   InterstitialAd newTripAd;
+    final prefs = PreferenciasUsuario();
+    final databaseReference = Firestore.instance;
   LatLng locationMante = LatLng(22.7433, -98.9747);
   GoogleMapController _mapController;
   Location location = new Location();
@@ -34,6 +38,7 @@ class _MapaPageState extends State<MapaPage> {
   void initState() {
     super.initState();
     FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
+    newTripAd = getNewTripInterstitialAd()..load();
     _markersUsuarioChofer();
     markerParada();
     iconoMarkerBus();
@@ -152,6 +157,7 @@ class _MapaPageState extends State<MapaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                   onTap: () {
+                    newTripAd = getNewTripInterstitialAd()..load();
                     newTripAd
                       ..load()
                       ..show(
@@ -289,10 +295,20 @@ class _MapaPageState extends State<MapaPage> {
     var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
     _mapController.animateCamera(cameraUpdate);
   }
-
+void _mandarParada(LatLng latLngParada)async{
+  final documentID = prefs.documentUserID;
+  await databaseReference.collection("Usuarios").document(documentID).updateData(
+    {'Parada':{
+      'latitud': latLngParada.latitude,
+      'longitud': latLngParada.longitude
+      }
+    });
+}
   void _addMarker(LatLng latLngParada) {
     if (_addMarkerEnabled) {
       LatLng _parada = latLngParada;
+      //manda cordenadas de la parada a firestore
+      _mandarParada(latLngParada);
       setState(() {
         _markers.add(Marker(
             markerId: MarkerId('parada'),
