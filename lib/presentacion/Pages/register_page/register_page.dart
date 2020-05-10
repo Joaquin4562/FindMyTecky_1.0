@@ -326,7 +326,11 @@ class _RegisterPageState extends State<RegisterPage> {
         'apellido': apellidoController.text,
         'contraseña': password1Controller.text,
         'correo': correoController.text,
-        'nombre': nombreController.text
+        'nombre': nombreController.text,
+        'Parada': {
+          'latitud':'',
+          'longitud': ''
+        }
       });
      _showSnackBar(context, 'Registro exitoso', Icons.verified_user,Colors.green);
      final String  mensaje = 'Estimado ${nombreController.text} ${apellidoController.text}.\nTe damos la bienvenida a Find My Tecky.\nSi no has creado la cuenta, por favor haz clic en el siguiente enlace:\n[link]\n¡Muchas gracias por usar nuestra app!';
