@@ -23,8 +23,8 @@ class MapaPage extends StatefulWidget {
 class _MapaPageState extends State<MapaPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   InterstitialAd newTripAd;
-    final prefs = PreferenciasUsuario();
-    final databaseReference = Firestore.instance;
+  final prefs = PreferenciasUsuario();
+  final databaseReference = Firestore.instance;
   LatLng locationMante = LatLng(22.7433, -98.9747);
   GoogleMapController _mapController;
   Location location = new Location();
@@ -267,6 +267,13 @@ class _MapaPageState extends State<MapaPage> {
         position: widget.choferTecky,
         icon: _busMarker,
         infoWindow: InfoWindow(title: "TECKY")));
+
+    _markers.add(Marker(
+        markerId: MarkerId('parada'),
+        position: LatLng(prefs.latitudP,prefs.longitudP),
+        icon: _markerParada,
+        infoWindow: InfoWindow(title: 'PARADA')));
+    _addMarkerEnabled = false;
   }
 
   void _onMapaCreated(GoogleMapController controller) {
@@ -295,15 +302,21 @@ class _MapaPageState extends State<MapaPage> {
     var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
     _mapController.animateCamera(cameraUpdate);
   }
-void _mandarParada(LatLng latLngParada)async{
-  final documentID = prefs.documentUserID;
-  await databaseReference.collection("Usuarios").document(documentID).updateData(
-    {'Parada':{
-      'latitud': latLngParada.latitude,
-      'longitud': latLngParada.longitude
+
+  void _mandarParada(LatLng latLngParada) async {
+    final documentID = prefs.documentUserID;
+    prefs.latitudP = latLngParada.latitude;
+    prefs.longitudP = latLngParada.longitude;
+    await databaseReference
+        .collection("Usuarios")
+        .document(documentID)
+        .updateData({
+      'Parada': {
+        'latitud': latLngParada.latitude,
+        'longitud': latLngParada.longitude
       }
     });
-}
+  }
   void _addMarker(LatLng latLngParada) {
     if (_addMarkerEnabled) {
       LatLng _parada = latLngParada;
