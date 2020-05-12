@@ -35,5 +35,17 @@ class PreferenciasUsuario {
   set documentUserID(String id){
     _prefs.setString('documentID', id);
   }
+  get latitudP{
+    return _prefs.getDouble('latitud') ?? 0.0;
+  }
+  set latitudP(double latitud){
+    _prefs.setDouble('latitud', latitud);
+  }
+  get longitudP{
+    return _prefs.getDouble('longitud') ?? 0.0;
+  }
+  set longitudP(double longitud){
+    _prefs.setDouble('longitud', longitud);
+  }
 
 }
