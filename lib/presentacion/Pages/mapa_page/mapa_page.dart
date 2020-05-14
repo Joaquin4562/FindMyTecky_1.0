@@ -1,5 +1,12 @@
 import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:find_my_tecky_1_0/negocios/class/coordenadas_choeferes.dart';
+import 'package:find_my_tecky_1_0/negocios/providers/coordenadas_chofer_provider.dart';
+import 'package:find_my_tecky_1_0/negocios/providers/direcctions_provider.dart';
+import 'package:find_my_tecky_1_0/negocios/providers/directions_provider_2.dart';
+import 'package:find_my_tecky_1_0/negocios/util/coordenadas_tecky.dart';
+import 'package:find_my_tecky_1_0/negocios/util/directions_api.dart';
 import 'package:find_my_tecky_1_0/negocios/util/preferencias_de_usuario.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -10,12 +17,10 @@ import 'package:find_my_tecky_1_0/presentacion/Pages/login_page/login_page.dart'
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:location/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 class MapaPage extends StatefulWidget {
   MapaPage({Key key}) : super(key: key);
-  final LatLng estudianteUsuario = LatLng(22.7552224, -98.9742958);
-  final LatLng choferTecky = LatLng(22.7523476, -98.9709782);
-
   @override
   _MapaPageState createState() => _MapaPageState();
 }
@@ -30,9 +35,9 @@ class _MapaPageState extends State<MapaPage> {
   Location location = new Location();
   bool _addMarkerEnabled = false;
   var _markers = Set<Marker>();
-  BitmapDescriptor markerUsuarioIcon;
-  BitmapDescriptor _markerParada;
-  BitmapDescriptor _busMarker;
+  LatLng estudianteUsuario = LatLng(22.726189, -98.968277);
+  LatLng choferTecky = LatLng(22.743505, -98.962588);
+  CoordenadasChoferes coordenadasChoferes;
 
   @override
   void initState() {
@@ -40,12 +45,16 @@ class _MapaPageState extends State<MapaPage> {
     FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
     newTripAd = getNewTripInterstitialAd()..load();
     _markersUsuarioChofer();
-    markerParada();
-    iconoMarkerBus();
+    print('pantalla mapa');
   }
 
   @override
   Widget build(BuildContext context) {
+    final coordenadasChoferProvider =
+        Provider.of<CoordenadasChoferProvider>(context);
+    final distanceMatrixProvider = Provider.of<DirectionsProvider>(context);
+    print('Provider coordenadas: ' +
+        coordenadasChoferProvider.coordenadas.toString());
     return Scaffold(
       key: _scaffoldKey,
       floatingActionButton: FloatingActionButton(
@@ -85,69 +94,18 @@ class _MapaPageState extends State<MapaPage> {
                           image: AssetImage('assets/logo.png'),
                           fit: BoxFit.cover)),
                 ),
-                ListTile(
-                  title: Text(
-                    'Rotaria',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                  onTap: () {
-                    newTripAd = getNewTripInterstitialAd()..load();
-                    newTripAd
-                      ..load()
-                      ..show(
-                          anchorOffset: 0.0,
-                          anchorType: AnchorType.bottom,
-                          horizontalCenterOffset: 0.0);
-                  },
-                  trailing: Icon(
-                    Icons.location_on,
-                    color: Colors.white,
-                  ),
-                ),
+                _listTile("Rotaria", coordenadasChoferProvider,
+                    distanceMatrixProvider),
                 Divider(
                   color: Colors.white,
                 ),
-                ListTile(
-                  title: Text(
-                    'Centro',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                  onTap: () {
-                    newTripAd = getNewTripInterstitialAd()..load();
-                    newTripAd
-                      ..load()
-                      ..show(
-                          anchorOffset: 0.0,
-                          anchorType: AnchorType.bottom,
-                          horizontalCenterOffset: 0.0);
-                  },
-                  trailing: Icon(
-                    Icons.location_on,
-                    color: Colors.white,
-                  ),
-                ),
+                _listTile('Centro', coordenadasChoferProvider,
+                    distanceMatrixProvider),
                 Divider(
                   color: Colors.white,
                 ),
-                ListTile(
-                  title: Text(
-                    'Linares',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                  onTap: () {
-                    newTripAd = getNewTripInterstitialAd()..load();
-                    newTripAd
-                      ..load()
-                      ..show(
-                          anchorOffset: 0.0,
-                          anchorType: AnchorType.bottom,
-                          horizontalCenterOffset: 0.0);
-                  },
-                  trailing: Icon(
-                    Icons.location_on,
-                    color: Colors.white,
-                  ),
-                ),
+                _listTile('Linares', coordenadasChoferProvider,
+                    distanceMatrixProvider),
                 Divider(
                   color: Colors.white,
                 ),
@@ -158,12 +116,7 @@ class _MapaPageState extends State<MapaPage> {
                   ),
                   onTap: () {
                     newTripAd = getNewTripInterstitialAd()..load();
-                    newTripAd
-                      ..load()
-                      ..show(
-                          anchorOffset: 0.0,
-                          anchorType: AnchorType.bottom,
-                          horizontalCenterOffset: 0.0);
+                    showInterstitialAd(newTripAd);
                     _addMarkerEnabled = true;
                     showDialog(
                         context: _scaffoldKey.currentContext,
@@ -200,6 +153,7 @@ class _MapaPageState extends State<MapaPage> {
                       ),
                       onTap: () {
                         signOutGoogle();
+                        prefs.isLogged = false;
                         Navigator.pushReplacementNamed(context, 'LoginPage');
                       },
                       trailing: Icon(
@@ -223,21 +177,28 @@ class _MapaPageState extends State<MapaPage> {
                 Container(
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
-                  child: GoogleMap(
-                    onTap: _addMarker,
-                    mapType: MapType.normal,
-                    initialCameraPosition: CameraPosition(
-                      target: locationMante,
-                      zoom: 6,
-                    ),
-                    markers: _markers,
-                    onMapCreated: _onMapaCreated,
-                    gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
-                      new Factory<OneSequenceGestureRecognizer>(
-                        () => new EagerGestureRecognizer(),
+                  child: Consumer<DirectionProviderApi>(builder:
+                      (BuildContext context, DirectionProviderApi api,
+                          Widget child) {
+                    return GoogleMap(
+                      onTap: _addMarker,
+                      mapType: MapType.normal,
+                      initialCameraPosition: CameraPosition(
+                        target: locationMante,
+                        zoom: 6,
                       ),
-                    ].toSet(),
-                  ),
+                      markers: _markers,
+                      myLocationEnabled: true,
+                      polylines: api.currentRoute,
+                      onMapCreated: _onMapaCreated,
+                      gestureRecognizers:
+                          <Factory<OneSequenceGestureRecognizer>>[
+                        new Factory<OneSequenceGestureRecognizer>(
+                          () => new EagerGestureRecognizer(),
+                        ),
+                      ].toSet(),
+                    );
+                  }),
                 ),
               ],
             )
@@ -245,61 +206,56 @@ class _MapaPageState extends State<MapaPage> {
     );
   }
 
-  void iconoMarkerBus() async {
-    _busMarker = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 3.0), 'assets/marker_parada.png');
-  }
-
-  void markerParada() async {
-    _markerParada = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 5.0), 'assets/marker_parada.png');
-  }
-
   void _markersUsuarioChofer() {
     _markers.add(Marker(
         markerId: MarkerId("PuntoEstudiante"),
-        icon: markerUsuarioIcon,
-        position: widget.estudianteUsuario,
+        position: estudianteUsuario,
         infoWindow: InfoWindow(title: "Posición Actual")));
 
     _markers.add(Marker(
         markerId: MarkerId("puntoTecky"),
-        position: widget.choferTecky,
-        icon: _busMarker,
+        position: choferTecky,
+        onTap: mostrarBottomSheet,
         infoWindow: InfoWindow(title: "TECKY")));
 
     _markers.add(Marker(
         markerId: MarkerId('parada'),
-        position: LatLng(prefs.latitudP,prefs.longitudP),
-        icon: _markerParada,
+        position: LatLng(prefs.latitudP, prefs.longitudP),
         infoWindow: InfoWindow(title: 'PARADA')));
     _addMarkerEnabled = false;
   }
 
   void _onMapaCreated(GoogleMapController controller) {
-    setState(() {
-      _mapController = controller;
-      _centerView();
-    });
+    _mapController = controller;
+    _centerView();
   }
 
-//Método que se ajusta para que se vean los 2 puntos
+  //Método que se ajusta para que se vean los 2 puntos
   _centerView() async {
+    final api = Provider.of<DirectionProviderApi>(context);
     await _mapController.getVisibleRegion();
-//Cálculo los 4 puntos cardinales
-    var posicionIzquierda =
-        min(widget.estudianteUsuario.latitude, widget.choferTecky.latitude);
-    var posicionDerecha =
-        max(widget.estudianteUsuario.latitude, widget.choferTecky.latitude);
-    var posicionArriba =
-        max(widget.estudianteUsuario.longitude, widget.choferTecky.longitude);
-    var posicionAbajo =
-        min(widget.estudianteUsuario.longitude, widget.choferTecky.longitude);
+    //Cálculo los 4 puntos cardinales
+    await api.findDirections(estudianteUsuario, choferTecky);
 
+    double posicionIzquierda =
+        min(estudianteUsuario.latitude, choferTecky.latitude);
+    double posicionDerecha =
+        max(estudianteUsuario.latitude, choferTecky.latitude);
+    double posicionArriba =
+        max(estudianteUsuario.longitude, choferTecky.longitude);
+    double posicionAbajo =
+        min(estudianteUsuario.longitude, choferTecky.longitude);
+
+    api.currentRoute.first.points.forEach((element) {
+      posicionIzquierda = min(posicionIzquierda, element.latitude);
+      posicionDerecha = max(posicionDerecha, element.latitude);
+      posicionArriba = max(posicionArriba, element.longitude);
+      posicionAbajo = min(posicionAbajo, element.longitude);
+    });
     var bounds = LatLngBounds(
         southwest: LatLng(posicionIzquierda, posicionAbajo),
         northeast: LatLng(posicionDerecha, posicionArriba));
-    var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
+    var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 60);
     _mapController.animateCamera(cameraUpdate);
   }
 
@@ -317,6 +273,7 @@ class _MapaPageState extends State<MapaPage> {
       }
     });
   }
+
   void _addMarker(LatLng latLngParada) {
     if (_addMarkerEnabled) {
       LatLng _parada = latLngParada;
@@ -326,12 +283,86 @@ class _MapaPageState extends State<MapaPage> {
         _markers.add(Marker(
             markerId: MarkerId('parada'),
             position: _parada,
-            icon: _markerParada,
             infoWindow: InfoWindow(title: 'PARADA')));
         _addMarkerEnabled = false;
         //Reactiva la publicidad
         newTripAd = getNewTripInterstitialAd()..load();
       });
     }
+  }
+
+  void _updateMarker(String id, LatLng choferTeckyC) {
+    _markers.removeWhere((element) => element.markerId.value == id);
+    Marker marker = new Marker(
+      markerId: MarkerId(id),
+      onTap: mostrarBottomSheet,
+      infoWindow: InfoWindow(title: 'TECKY'),
+      position: choferTeckyC,
+    );
+    setState(() {
+      _markers.add(marker);
+    });
+  }
+
+  Widget _listTile(
+      String ruta,
+      CoordenadasChoferProvider coordenadasChoferProvider,
+      DirectionsProvider distanceMatrixProvider) {
+    return ListTile(
+      title: Text(
+        ruta,
+        style: TextStyle(color: Colors.white, fontSize: 18),
+      ),
+      onTap: () async {
+        prefs.rutaActual = ruta;
+        newTripAd = getNewTripInterstitialAd()..load();
+        await showInterstitialAd(newTripAd);
+        await obtenerCoordenadasChofer(
+            prefs.rutaActual, coordenadasChoferProvider);
+        choferTecky = coordenadasChoferProvider.coordenadas;
+        getDistance(estudianteUsuario, choferTecky, distanceMatrixProvider);
+        _updateMarker('puntoTecky', choferTecky);
+        _centerView();
+      },
+      trailing: Icon(
+        Icons.location_on,
+        color: Colors.white,
+      ),
+    );
+  }
+
+  void mostrarBottomSheet() {
+    final api = Provider.of<DirectionProviderApi>(context);
+    _scaffoldKey.currentState.showBottomSheet((context) {
+      return Container(
+        decoration: BoxDecoration(
+          border: Border(top: BorderSide(color: Colors.black12)),
+        ),
+        child: ListView(
+          shrinkWrap: true,
+          primary: false,
+          children: <Widget>[
+            ListTile(
+              dense: true,
+              title: Text('Distancia: '+api.distance,style: TextStyle(fontSize: 20),),
+            ),
+            ListTile(
+              dense: true,
+              title: Text('Tiempo: '+api.duration, style: TextStyle(fontSize: 20),),
+            ),
+            ButtonBar(
+              children: <Widget>[
+                FlatButton(
+                  child: Text('Ok', style: TextStyle(fontSize: 20),),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+            )
+          ],
+        ),
+      );
+    });
   }
 }

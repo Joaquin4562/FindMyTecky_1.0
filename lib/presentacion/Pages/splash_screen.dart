@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:find_my_tecky_1_0/negocios/providers/coordenadas_chofer_provider.dart';
+import 'package:find_my_tecky_1_0/negocios/util/coordenadas_tecky.dart';
 import 'package:find_my_tecky_1_0/negocios/util/preferencias_de_usuario.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key key}) : super(key: key);
@@ -56,14 +59,17 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  void _cambiarPantalla() {
+  void _cambiarPantalla() async{
+    final coordenadasChoferProvider = Provider.of<CoordenadasChoferProvider>(context);
     final prefs = PreferenciasUsuario();
     if (prefs.isFristUser) {
       Navigator.of(context).pushReplacementNamed('OnBoarding');
     } else {
-      if (!prefs.isLogged) {
+      if (!prefs.isLogged){
         Navigator.of(context).pushReplacementNamed('MenuPage');
-      } else {
+      } else{
+        final prefs = PreferenciasUsuario();
+        await obtenerCoordenadasChofer(prefs.rutaActual, coordenadasChoferProvider);
         Navigator.of(context).pushReplacementNamed('MapaPage');
       }
     }
