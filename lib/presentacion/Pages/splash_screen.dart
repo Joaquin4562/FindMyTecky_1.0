@@ -59,8 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  void _cambiarPantalla() async{
-    final coordenadasChoferProvider = Provider.of<CoordenadasChoferProvider>(context);
+  void _cambiarPantalla(){
     final prefs = PreferenciasUsuario();
     if (prefs.isFristUser) {
       Navigator.of(context).pushReplacementNamed('OnBoarding');
@@ -68,8 +67,6 @@ class _SplashScreenState extends State<SplashScreen> {
       if (!prefs.isLogged){
         Navigator.of(context).pushReplacementNamed('MenuPage');
       } else{
-        final prefs = PreferenciasUsuario();
-        await obtenerCoordenadasChofer(prefs.rutaActual, coordenadasChoferProvider);
         Navigator.of(context).pushReplacementNamed('MapaPage');
       }
     }

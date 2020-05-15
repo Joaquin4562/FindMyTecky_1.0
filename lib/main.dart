@@ -18,7 +18,7 @@ void main() async {
   final prefs = PreferenciasUsuario();
   WidgetsFlutterBinding.ensureInitialized();
   await prefs.initPrefs();
-  prefs.rutaActual = 'Centro';
+  prefs.rutaActual = 0;
   print('Frist user?'+prefs.isFristUser.toString());
   print('Logged?'+prefs.isLogged.toString());
   runApp(MyApp());

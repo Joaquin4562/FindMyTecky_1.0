@@ -5,8 +5,6 @@ import 'package:find_my_tecky_1_0/negocios/class/coordenadas_choeferes.dart';
 import 'package:find_my_tecky_1_0/negocios/providers/coordenadas_chofer_provider.dart';
 import 'package:find_my_tecky_1_0/negocios/providers/direcctions_provider.dart';
 import 'package:find_my_tecky_1_0/negocios/providers/directions_provider_2.dart';
-import 'package:find_my_tecky_1_0/negocios/util/coordenadas_tecky.dart';
-import 'package:find_my_tecky_1_0/negocios/util/directions_api.dart';
 import 'package:find_my_tecky_1_0/negocios/util/preferencias_de_usuario.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -36,7 +34,7 @@ class _MapaPageState extends State<MapaPage> {
   bool _addMarkerEnabled = false;
   var _markers = Set<Marker>();
   LatLng estudianteUsuario = LatLng(22.726189, -98.968277);
-  LatLng choferTecky = LatLng(22.743505, -98.962588);
+  LatLng choferTecky;
   CoordenadasChoferes coordenadasChoferes;
 
   @override
@@ -44,36 +42,26 @@ class _MapaPageState extends State<MapaPage> {
     super.initState();
     FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
     newTripAd = getNewTripInterstitialAd()..load();
-    _markersUsuarioChofer();
-    print('pantalla mapa');
   }
 
   @override
   Widget build(BuildContext context) {
     final coordenadasChoferProvider =
         Provider.of<CoordenadasChoferProvider>(context);
-    final distanceMatrixProvider = Provider.of<DirectionsProvider>(context);
-    print('Provider coordenadas: ' +
-        coordenadasChoferProvider.coordenadas.toString());
+    final directionsProvider = Provider.of<DirectionsProvider>(context);
     return Scaffold(
       key: _scaffoldKey,
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.nature),
-          elevation: 30,
+          elevation: 10,
           onPressed: () {
-            _centerView();
+            _centerView(choferTecky, estudianteUsuario);
           }),
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.black45,
-        title: Text(
-          'Find My Tecky',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        elevation: 0,
+        title: _title(prefs.rutaActual),
+        elevation: 5,
       ),
       drawer: Drawer(
         elevation: 10,
@@ -94,18 +82,18 @@ class _MapaPageState extends State<MapaPage> {
                           image: AssetImage('assets/logo.png'),
                           fit: BoxFit.cover)),
                 ),
-                _listTile("Rotaria", coordenadasChoferProvider,
-                    distanceMatrixProvider),
+                _listTile(
+                    "Rotaria", coordenadasChoferProvider, directionsProvider),
                 Divider(
                   color: Colors.white,
                 ),
-                _listTile('Centro', coordenadasChoferProvider,
-                    distanceMatrixProvider),
+                _listTile(
+                    'Centro', coordenadasChoferProvider, directionsProvider),
                 Divider(
                   color: Colors.white,
                 ),
-                _listTile('Linares', coordenadasChoferProvider,
-                    distanceMatrixProvider),
+                _listTile(
+                    'Linares', coordenadasChoferProvider, directionsProvider),
                 Divider(
                   color: Colors.white,
                 ),
@@ -168,94 +156,95 @@ class _MapaPageState extends State<MapaPage> {
           ),
         ),
       ),
-      body: ListView(
-          itemExtent: MediaQuery.of(context).size.height * 1.2,
-          children: <Widget>[
-            Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  child: Consumer<DirectionProviderApi>(builder:
-                      (BuildContext context, DirectionProviderApi api,
-                          Widget child) {
-                    return GoogleMap(
-                      onTap: _addMarker,
-                      mapType: MapType.normal,
-                      initialCameraPosition: CameraPosition(
-                        target: locationMante,
-                        zoom: 6,
-                      ),
-                      markers: _markers,
-                      myLocationEnabled: true,
-                      polylines: api.currentRoute,
-                      onMapCreated: _onMapaCreated,
-                      gestureRecognizers:
-                          <Factory<OneSequenceGestureRecognizer>>[
-                        new Factory<OneSequenceGestureRecognizer>(
-                          () => new EagerGestureRecognizer(),
+      body: StreamBuilder(
+          stream: databaseReference.collection('Transportes').snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData)
+              return const Center(child: CircularProgressIndicator());
+            return ListView(
+                itemExtent: MediaQuery.of(context).size.height * 1.2,
+                children: <Widget>[
+                  Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Container(
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
+                        child: GoogleMap(
+                          onTap: _addMarker,
+                          mapType: MapType.normal,
+                          initialCameraPosition: CameraPosition(
+                            target: locationMante,
+                            zoom: 6,
+                          ),
+                          markers: _markersUsuarioChofer(
+                              snapshot.data.documents[prefs.rutaActual]),
+                          myLocationEnabled: true,
+                          onMapCreated: _onMapaCreated,
+                          gestureRecognizers:
+                              <Factory<OneSequenceGestureRecognizer>>[
+                            new Factory<OneSequenceGestureRecognizer>(
+                              () => new EagerGestureRecognizer(),
+                            ),
+                          ].toSet(),
                         ),
-                      ].toSet(),
-                    );
-                  }),
-                ),
-              ],
-            )
-          ]),
+                      ),
+                    ],
+                  )
+                ]);
+          }),
     );
   }
 
-  void _markersUsuarioChofer() {
-    _markers.add(Marker(
+  Set<Marker> _markersUsuarioChofer(snapshot) {
+    final choferTeckyCoordenadas =
+        Provider.of<CoordenadasChoferProvider>(context);
+    final posicionTeky = LatLng(
+        double.parse(snapshot['latitud']), double.parse(snapshot['longitud']));
+    choferTeckyCoordenadas.coordenadas = posicionTeky;
+    choferTecky = posicionTeky;
+    final markers = Set<Marker>();
+    markers.add(Marker(
         markerId: MarkerId("PuntoEstudiante"),
         position: estudianteUsuario,
         infoWindow: InfoWindow(title: "Posición Actual")));
 
-    _markers.add(Marker(
+    markers.add(Marker(
         markerId: MarkerId("puntoTecky"),
-        position: choferTecky,
+        position: posicionTeky,
         onTap: mostrarBottomSheet,
         infoWindow: InfoWindow(title: "TECKY")));
-
-    _markers.add(Marker(
-        markerId: MarkerId('parada'),
-        position: LatLng(prefs.latitudP, prefs.longitudP),
-        infoWindow: InfoWindow(title: 'PARADA')));
-    _addMarkerEnabled = false;
+    if (prefs.latitudP != 0.0) {
+      markers.add(Marker(
+          markerId: MarkerId('parada'),
+          position: LatLng(prefs.latitudP, prefs.longitudP),
+          infoWindow: InfoWindow(title: 'PARADA')));
+      _addMarkerEnabled = false;
+    }
+    _markers = markers;
+    return markers;
   }
 
   void _onMapaCreated(GoogleMapController controller) {
     _mapController = controller;
-    _centerView();
+    _centerView(choferTecky, estudianteUsuario);
   }
 
   //Método que se ajusta para que se vean los 2 puntos
-  _centerView() async {
+  _centerView(chofer, estudiante) async {
     final api = Provider.of<DirectionProviderApi>(context);
     await _mapController.getVisibleRegion();
     //Cálculo los 4 puntos cardinales
-    await api.findDirections(estudianteUsuario, choferTecky);
+    await api.findDirections(chofer, estudiante);
 
-    double posicionIzquierda =
-        min(estudianteUsuario.latitude, choferTecky.latitude);
-    double posicionDerecha =
-        max(estudianteUsuario.latitude, choferTecky.latitude);
-    double posicionArriba =
-        max(estudianteUsuario.longitude, choferTecky.longitude);
-    double posicionAbajo =
-        min(estudianteUsuario.longitude, choferTecky.longitude);
-
-    api.currentRoute.first.points.forEach((element) {
-      posicionIzquierda = min(posicionIzquierda, element.latitude);
-      posicionDerecha = max(posicionDerecha, element.latitude);
-      posicionArriba = max(posicionArriba, element.longitude);
-      posicionAbajo = min(posicionAbajo, element.longitude);
-    });
+    double posicionIzquierda = min(estudiante.latitude, chofer.latitude);
+    double posicionDerecha = max(estudiante.latitude, chofer.latitude);
+    double posicionArriba = max(estudiante.longitude, chofer.longitude);
+    double posicionAbajo = min(estudiante.longitude, chofer.longitude);
     var bounds = LatLngBounds(
         southwest: LatLng(posicionIzquierda, posicionAbajo),
         northeast: LatLng(posicionDerecha, posicionArriba));
-    var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 60);
+    var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 80);
     _mapController.animateCamera(cameraUpdate);
   }
 
@@ -291,19 +280,6 @@ class _MapaPageState extends State<MapaPage> {
     }
   }
 
-  void _updateMarker(String id, LatLng choferTeckyC) {
-    _markers.removeWhere((element) => element.markerId.value == id);
-    Marker marker = new Marker(
-      markerId: MarkerId(id),
-      onTap: mostrarBottomSheet,
-      infoWindow: InfoWindow(title: 'TECKY'),
-      position: choferTeckyC,
-    );
-    setState(() {
-      _markers.add(marker);
-    });
-  }
-
   Widget _listTile(
       String ruta,
       CoordenadasChoferProvider coordenadasChoferProvider,
@@ -314,15 +290,15 @@ class _MapaPageState extends State<MapaPage> {
         style: TextStyle(color: Colors.white, fontSize: 18),
       ),
       onTap: () async {
-        prefs.rutaActual = ruta;
+        if (ruta == "Centro") {
+          prefs.rutaActual = 0;
+        } else if (ruta == "Rotaria") {
+          prefs.rutaActual = 2;
+        } else {
+          prefs.rutaActual = 1;
+        }
         newTripAd = getNewTripInterstitialAd()..load();
-        await showInterstitialAd(newTripAd);
-        await obtenerCoordenadasChofer(
-            prefs.rutaActual, coordenadasChoferProvider);
-        choferTecky = coordenadasChoferProvider.coordenadas;
-        getDistance(estudianteUsuario, choferTecky, distanceMatrixProvider);
-        _updateMarker('puntoTecky', choferTecky);
-        _centerView();
+        Navigator.pushReplacementNamed(context, 'MapaPage');
       },
       trailing: Icon(
         Icons.location_on,
@@ -333,6 +309,15 @@ class _MapaPageState extends State<MapaPage> {
 
   void mostrarBottomSheet() {
     final api = Provider.of<DirectionProviderApi>(context);
+    String distancia;
+    String duracion;
+    if (api.distance == null) {
+      distancia = "unknow";
+      duracion = "unknow";
+    } else {
+      distancia = api.distance;
+      duracion = api.duration;
+    }
     _scaffoldKey.currentState.showBottomSheet((context) {
       return Container(
         decoration: BoxDecoration(
@@ -344,16 +329,25 @@ class _MapaPageState extends State<MapaPage> {
           children: <Widget>[
             ListTile(
               dense: true,
-              title: Text('Distancia: '+api.distance,style: TextStyle(fontSize: 20),),
+              title: Text(
+                'Distancia: ' + distancia,
+                style: TextStyle(fontSize: 20),
+              ),
             ),
             ListTile(
               dense: true,
-              title: Text('Tiempo: '+api.duration, style: TextStyle(fontSize: 20),),
+              title: Text(
+                'Tiempo: ' + duracion,
+                style: TextStyle(fontSize: 20),
+              ),
             ),
             ButtonBar(
               children: <Widget>[
                 FlatButton(
-                  child: Text('Ok', style: TextStyle(fontSize: 20),),
+                  child: Text(
+                    'Ok',
+                    style: TextStyle(fontSize: 20),
+                  ),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -364,5 +358,23 @@ class _MapaPageState extends State<MapaPage> {
         ),
       );
     });
+  }
+
+  Widget _title(rutaActual) {
+    String title;
+    if (rutaActual == 0) {
+      title = "CENTRO";
+    } else if (rutaActual == 1) {
+      title = "LINARES";
+    } else {
+      title = "ROTARIA";
+    }
+    return Text(
+      '$title',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+    );
   }
 }
