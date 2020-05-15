@@ -125,7 +125,7 @@ class _MenuPageState extends State<MenuPage> {
               ),
             ),
           ),
-          Text('or',style: TextStyle(color: Colors.white,fontSize: 15),),
+          Text('o',style: TextStyle(color: Colors.white,fontSize: 15),),
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8),
