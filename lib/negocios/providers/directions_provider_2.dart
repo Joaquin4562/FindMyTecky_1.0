@@ -23,7 +23,6 @@ class DirectionProviderApi extends ChangeNotifier {
     );
 
     Set<maps.Polyline> newRoute = Set();
-
     if (result.isOkay) {
       var route = result.routes[0];
       var leg = route.legs[0];
@@ -44,7 +43,6 @@ class DirectionProviderApi extends ChangeNotifier {
       );
       newRoute.add(line);
 
-      print(line);
 
       _route = newRoute;
       notifyListeners();

@@ -48,10 +48,10 @@ class PreferenciasUsuario {
     _prefs.setDouble('longitud', longitud);
   }
   get rutaActual{
-    return _prefs.getString('ruta') ?? 'centro';
+    return _prefs.getInt('ruta') ?? 0;
   }
-  set rutaActual(String ruta){
-    _prefs.setString('ruta', ruta);
+  set rutaActual(int ruta){
+    _prefs.setInt('ruta', ruta);
   }
 
 }
