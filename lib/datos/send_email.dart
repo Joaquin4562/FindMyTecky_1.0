@@ -17,7 +17,7 @@ sendEmail(String recipient, String subject, String text) async {
   try {
     final sendReport = await send(message, smtpServer);
     return true;
-  }on MailerException catch (e) {
+  }on MailerException {
     return null;
   }
 

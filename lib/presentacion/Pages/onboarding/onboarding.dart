@@ -64,7 +64,7 @@ class _OnBoardingState extends State<OnBoarding> {
                   child: FlatButton(
                     onPressed: () => Navigator.pushReplacementNamed(context, 'MenuPage'),
                     child: Text(
-                      'Skip',
+                      'Saltar',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
@@ -187,7 +187,7 @@ class _OnBoardingState extends State<OnBoarding> {
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 Text(
-                                  'Next',
+                                  'Siguiente',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 22.0,
@@ -221,7 +221,7 @@ class _OnBoardingState extends State<OnBoarding> {
                   child: Padding(
                     padding: EdgeInsets.only(bottom: 30.0),
                     child: Text(
-                      'Get started',
+                      'Comencemos',
                       style: TextStyle(
                         color: Color(0xFF005BA0),
                         fontSize: 20.0,
