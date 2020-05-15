@@ -1,10 +1,6 @@
 import 'dart:async';
-
-import 'package:find_my_tecky_1_0/negocios/providers/coordenadas_chofer_provider.dart';
-import 'package:find_my_tecky_1_0/negocios/util/coordenadas_tecky.dart';
 import 'package:find_my_tecky_1_0/negocios/util/preferencias_de_usuario.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key key}) : super(key: key);

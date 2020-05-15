@@ -34,6 +34,7 @@ dependencies:
   dio:
   google_maps_webservice: ^0.0.16
   firebase_admob:
+  flutter_local_notifications: ^1.4.1
   shared_preferences:
 
   location: 

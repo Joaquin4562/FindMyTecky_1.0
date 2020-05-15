@@ -9,8 +9,6 @@ import 'package:find_my_tecky_1_0/presentacion/Pages/register_page/register_page
 import 'package:find_my_tecky_1_0/presentacion/Pages/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'negocios/providers/direcctions_provider.dart';
 import 'negocios/providers/directions_provider_2.dart';
 
 
@@ -30,7 +28,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(builder: (context) => CoordenadasChoferProvider(),),
-        ChangeNotifierProvider(builder: (context) => DirectionsProvider(),),
         ChangeNotifierProvider(builder:(context) => DirectionProviderApi()),
       ],
       child: MaterialApp(
