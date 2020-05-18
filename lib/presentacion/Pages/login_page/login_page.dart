@@ -133,11 +133,10 @@ class _LoginPageState extends State<LoginPage> {
         enabledBorder:
             UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
         hintText: 'Ingrese su correo electrónico',
-        labelText: 'Correo:',
+        labelText: 'Correo',
         helperStyle: TextStyle(color: Colors.white),
         hintStyle: TextStyle(color: Colors.white),
         labelStyle: TextStyle(color: Colors.white),
-        helperText: 'Solo usar correos con extensión @itsmante.edu.mx',
         icon: Icon(
           Icons.account_circle,
           color: Colors.white,
@@ -156,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
             UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
         labelStyle: TextStyle(color: Colors.white),
         hintText: 'Ingrese su Contraseña',
-        labelText: 'Contraseña:',
+        labelText: 'Contraseña',
         hintStyle: TextStyle(color: Colors.white),
         icon: Icon(
           Icons.lock,

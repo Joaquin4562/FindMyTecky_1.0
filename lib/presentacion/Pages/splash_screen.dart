@@ -13,7 +13,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    var _duration = new Duration(seconds: 5);
+    var _duration = new Duration(seconds: 3);
     Timer(_duration, _cambiarPantalla);
   }
 

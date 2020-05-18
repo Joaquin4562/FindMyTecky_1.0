@@ -120,7 +120,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         enabledBorder:
             UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-        labelText: 'Nombre:',
+        labelText: 'Nombre',
       ),
     );
   }
@@ -140,7 +140,7 @@ class _RegisterPageState extends State<RegisterPage> {
           color: Colors.white,
         ),
         hintText: 'Ingrese su apellido',
-        labelText: 'Apellido:',
+        labelText: 'Apellido',
         enabledBorder:
             UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
       ),
@@ -166,8 +166,7 @@ class _RegisterPageState extends State<RegisterPage> {
           color: Colors.white,
         ),
         hintText: 'Ingrese su correo electrónico',
-        labelText: 'Correo:',
-        helperText: 'Solo usar correos con extensión @itsmante.edu.mx',
+        labelText: 'Correo',
         enabledBorder:
             UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
       ),
@@ -189,7 +188,7 @@ class _RegisterPageState extends State<RegisterPage> {
           color: Colors.white,
         ),
         hintText: 'Ingrese su Contraseña',
-        labelText: 'Contraseña:',
+        labelText: 'Contraseña',
         enabledBorder:
             UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
         suffixIcon: GestureDetector(
@@ -219,7 +218,7 @@ class _RegisterPageState extends State<RegisterPage> {
         labelStyle: TextStyle(
           color: Colors.white,
         ),
-        labelText: 'Contraseña:',
+        labelText: 'Contraseña',
         enabledBorder:
             UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
         suffixIcon: GestureDetector(
@@ -320,20 +319,20 @@ class _RegisterPageState extends State<RegisterPage> {
   //Metodo que se encarga de registrar al usuario en la BD
   registrar(context) async {
     try {
-       await firebaseAuth.createUserWithEmailAndPassword(
+      await firebaseAuth.createUserWithEmailAndPassword(
           email: correoController.text, password: password1Controller.text);
       await databaseReference.collection("Usuarios").add({
-        'apellido': apellidoController.text,
+        'apellidos': apellidoController.text,
         'contraseña': password1Controller.text,
         'correo': correoController.text,
-        'nombre': nombreController.text,
+        'nombres': nombreController.text,
         'Parada': {
           'latitud':'',
           'longitud': ''
         }
       });
-     _showSnackBar(context, 'Registro exitoso', Icons.verified_user,Colors.green);
-     final String  mensaje = 'Estimado ${nombreController.text} ${apellidoController.text}.\nTe damos la bienvenida a Find My Tecky.\nSi no has creado la cuenta, por favor haz clic en el siguiente enlace:\n[link]\n¡Muchas gracias por usar nuestra app!';
+    _showSnackBar(context, 'Registro exitoso', Icons.verified_user,Colors.green);
+    final String  mensaje = 'Estimado ${nombreController.text} ${apellidoController.text}.\nTe damos la bienvenida a Find My Tecky.\nSi no has creado la cuenta, por favor haz clic en el siguiente enlace:\n[link]\n¡Muchas gracias por usar nuestra app!';
     Navigator.pushReplacementNamed(context, "LoginPage");
     return sendEmail(correoController.text, 'Verificacion de cuenta', mensaje);
     } catch (e) {

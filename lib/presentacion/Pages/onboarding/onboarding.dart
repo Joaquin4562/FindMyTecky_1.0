@@ -70,7 +70,7 @@ class _OnBoardingState extends State<OnBoarding> {
                       Navigator.pushReplacementNamed(context, 'MenuPage');
                     },
                     child: Text(
-                      'Skip',
+                      'Saltar',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
@@ -110,7 +110,7 @@ class _OnBoardingState extends State<OnBoarding> {
                             ),
                             SizedBox(height: 15.0),
                             Text(
-                              'Con FindMyTecky! podrás estar al tanto de la ubicación de tu transporte Escolar',
+                              'Con FindMyTecky podrás estar al tanto de la ubicación de tu transporte Escolar',
                               style: kSubtitleStyle,
                             ),
                           ],
@@ -137,7 +137,7 @@ class _OnBoardingState extends State<OnBoarding> {
                             ),
                             SizedBox(height: 15.0),
                             Text(
-                              '¡Que no se pase!, serán las notificaciones para que sepas si tu transporte se encuentra cerca de tu parada',
+                              'Serán las notificaciones las que haran que te enteres si tu transporte se encuentra cerca de tu parada',
                               style: kSubtitleStyle,
                             ),
                           ],
@@ -193,7 +193,7 @@ class _OnBoardingState extends State<OnBoarding> {
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 Text(
-                                  'Next',
+                                  'Siguiente',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 22.0,
@@ -218,7 +218,7 @@ class _OnBoardingState extends State<OnBoarding> {
       ),
       bottomSheet: _currentPage == _numPages - 1
           ? Container(
-              height: height < 600 ? 80:100,
+              height: height < 600 ? 70:80,
               width: double.infinity,
               color: Colors.white,
               child: GestureDetector(
@@ -231,10 +231,10 @@ class _OnBoardingState extends State<OnBoarding> {
                   child: Padding(
                     padding: EdgeInsets.only(bottom: 20.0),
                     child: Text(
-                      'Get started',
+                      'Comencemos',
                       style: TextStyle(
                         color: Color(0xFF005BA0),
-                        fontSize: 20.0,
+                        fontSize: height < 600 ? 20:25,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
