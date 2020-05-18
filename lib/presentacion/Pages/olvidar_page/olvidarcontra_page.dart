@@ -68,12 +68,10 @@ class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
                         enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white)),
                         hintText: 'Ingrese su correo electrónico',
-                        labelText: 'Correo:',
+                        labelText: 'Correo',
                         helperStyle: TextStyle(color: Colors.white),
                         hintStyle: TextStyle(color: Colors.white),
                         labelStyle: TextStyle(color: Colors.white),
-                        helperText:
-                            'Solo usar correos con extensión @itsmante.edu.mx',
                       ),
                     )
                   ],

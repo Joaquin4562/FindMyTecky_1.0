@@ -1,11 +1,10 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:find_my_tecky_1_0/negocios/class/coordenadas_choeferes.dart';
 import 'package:find_my_tecky_1_0/negocios/providers/coordenadas_chofer_provider.dart';
-import 'package:find_my_tecky_1_0/negocios/providers/direcctions_provider.dart';
 import 'package:find_my_tecky_1_0/negocios/providers/directions_provider_2.dart';
 import 'package:find_my_tecky_1_0/negocios/util/preferencias_de_usuario.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:find_my_tecky_1_0/negocios/util/admob_utils.dart';
 import 'package:find_my_tecky_1_0/presentacion/Pages/login_page/login_page.dart';
 import 'package:firebase_admob/firebase_admob.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:location/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -31,11 +31,13 @@ class _MapaPageState extends State<MapaPage> {
   LatLng locationMante = LatLng(22.7433, -98.9747);
   GoogleMapController _mapController;
   Location location = new Location();
+  TextEditingController _controllerTime = TextEditingController();
+  TimeOfDay _time = TimeOfDay.now();
+  TimeOfDay _picker;
   bool _addMarkerEnabled = false;
   var _markers = Set<Marker>();
   LatLng estudianteUsuario = LatLng(22.726189, -98.968277);
   LatLng choferTecky;
-  CoordenadasChoferes coordenadasChoferes;
 
   @override
   void initState() {
@@ -48,12 +50,12 @@ class _MapaPageState extends State<MapaPage> {
   Widget build(BuildContext context) {
     final coordenadasChoferProvider =
         Provider.of<CoordenadasChoferProvider>(context);
-    final directionsProvider = Provider.of<DirectionsProvider>(context);
     return Scaffold(
       key: _scaffoldKey,
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.nature),
+          child: Icon(Icons.adjust,size: 35,),
           elevation: 10,
+          backgroundColor: Colors.black54,
           onPressed: () {
             _centerView(choferTecky, estudianteUsuario);
           }),
@@ -62,6 +64,44 @@ class _MapaPageState extends State<MapaPage> {
         backgroundColor: Colors.black45,
         title: _title(prefs.rutaActual),
         elevation: 5,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.alarm_add),
+            onPressed: (){
+              showDialog(
+                        context: _scaffoldKey.currentContext,
+                        builder: (context) {
+                          return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            actions: <Widget>[
+                              FlatButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    //TODO: CALCULAR NOTIFICACIÓN
+                                  },
+                                  child: Text('Aceptar'))
+                            ],
+                            title: Text('IMPORTANTE'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Text('Seleccione una hora'),
+                                TextField(
+                                  controller: _controllerTime,
+                                  autofocus: false,
+                                  onTap: (){
+                                    selectedTime(context);
+                                  },
+                                )
+                              ],
+                            )
+                          );
+                        });
+            }
+          )
+        ],
       ),
       drawer: Drawer(
         elevation: 10,
@@ -83,17 +123,17 @@ class _MapaPageState extends State<MapaPage> {
                           fit: BoxFit.cover)),
                 ),
                 _listTile(
-                    "Rotaria", coordenadasChoferProvider, directionsProvider),
+                    "Rotaria", coordenadasChoferProvider),
                 Divider(
                   color: Colors.white,
                 ),
                 _listTile(
-                    'Centro', coordenadasChoferProvider, directionsProvider),
+                    'Centro', coordenadasChoferProvider),
                 Divider(
                   color: Colors.white,
                 ),
                 _listTile(
-                    'Linares', coordenadasChoferProvider, directionsProvider),
+                    'Linares', coordenadasChoferProvider),
                 Divider(
                   color: Colors.white,
                 ),
@@ -110,6 +150,9 @@ class _MapaPageState extends State<MapaPage> {
                         context: _scaffoldKey.currentContext,
                         builder: (context) {
                           return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             actions: <Widget>[
                               FlatButton(
                                   onPressed: () {
@@ -160,7 +203,7 @@ class _MapaPageState extends State<MapaPage> {
           stream: databaseReference.collection('Transportes').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData)
-              return const Center(child: CircularProgressIndicator());
+              return Center(child: SpinKitDoubleBounce(color: Colors.red,));
             return ListView(
                 itemExtent: MediaQuery.of(context).size.height * 1.2,
                 children: <Widget>[
@@ -282,8 +325,7 @@ class _MapaPageState extends State<MapaPage> {
 
   Widget _listTile(
       String ruta,
-      CoordenadasChoferProvider coordenadasChoferProvider,
-      DirectionsProvider distanceMatrixProvider) {
+      CoordenadasChoferProvider coordenadasChoferProvider ) {
     return ListTile(
       title: Text(
         ruta,
@@ -376,5 +418,18 @@ class _MapaPageState extends State<MapaPage> {
         color: Colors.white,
       ),
     );
+  }
+  Future<Null> selectedTime(BuildContext context) async{
+    _picker = await showTimePicker(
+      context: context,
+      initialTime: _time,
+    );
+    if(_picker != null){
+      MaterialLocalizations localizations = MaterialLocalizations.of(context);
+      String formatedTime = localizations.formatTimeOfDay(_picker,alwaysUse24HourFormat: false);
+      setState(() {
+        _controllerTime.text = formatedTime;
+      });
+    }
   }
 }

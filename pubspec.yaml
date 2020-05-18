@@ -32,8 +32,10 @@ dependencies:
   fluttertoast: ^4.0.0
   cupertino_icons: ^0.1.2
   dio:
+  flutter_spinkit: ^4.1.2
   google_maps_webservice: ^0.0.16
   firebase_admob:
+  flutter_local_notifications: ^1.4.1
   shared_preferences:
 
   location: 
