@@ -41,8 +41,6 @@ Future<String> signInWithGoogle() async {
 
 void signOutGoogle() async {
   await googleSignIn.signOut();
-
-  print('User sign out');
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -52,6 +50,7 @@ class _LoginPageState extends State<LoginPage> {
   Firestore _firestoreReference = Firestore.instance;
   TextEditingController _controllerEmail = new TextEditingController();
   TextEditingController _controllerPass = new TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +64,7 @@ class _LoginPageState extends State<LoginPage> {
             image: AssetImage("assets/fondo.png"), fit: BoxFit.cover),
       ),
       child: Scaffold(
+          key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           body: SingleChildScrollView(
             child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
@@ -320,12 +320,12 @@ class _LoginPageState extends State<LoginPage> {
         TextSpan(
             text: 'Condiciones de servicio ',
             style: new TextStyle(color: Colors.blue),
-            recognizer: new TapGestureRecognizer()..onTap = () {}),
+            recognizer: new TapGestureRecognizer()..onTap = () {_showDialog('Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas "Letraset", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum.',1);}),
         TextSpan(text: 'y la'),
         TextSpan(
             text: ' Política de privaciada ',
             style: new TextStyle(color: Colors.blue),
-            recognizer: new TapGestureRecognizer()..onTap = () {}),
+            recognizer: new TapGestureRecognizer()..onTap = () {_showDialog('Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas "Letraset", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum.',2);}),
         TextSpan(text: 'de Find My Tecky.'),
       ]),
     );
@@ -349,7 +349,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           Text(
-            'or',
+            'o',
             style: TextStyle(color: Colors.white, fontSize: 15),
           ),
           Expanded(
@@ -367,5 +367,30 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
+  }
+
+  _showDialog(String texto, int tipo) {
+    showDialog(
+        context: _scaffoldKey.currentContext,
+        builder: (context) {
+          return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Aceptar'))
+              ],
+              title: tipo == 1? Text('Condiciónes de servicio'):Text('Politica de privacidad'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text('$texto'),
+                ],
+              ));
+        });
   }
 }

@@ -30,17 +30,6 @@ class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
             image: AssetImage("assets/fondo.png"), fit: BoxFit.cover),
       ),
       child: Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.only(bottom: 320),
-          child: FloatingActionButton(
-            onPressed: recoverPass,
-            backgroundColor: Colors.blue,
-            child: Center(
-              child: Icon(Icons.send),
-            ),
-          ),
-        ),
         backgroundColor: Colors.transparent,
         body: Center(
           child: ClipRRect(
@@ -73,7 +62,9 @@ class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
                         hintStyle: TextStyle(color: Colors.white),
                         labelStyle: TextStyle(color: Colors.white),
                       ),
-                    )
+                    ),
+                    SizedBox(height: 30,),
+                    _iniciarsesion(),
                   ],
                 ),
               ),
@@ -122,5 +113,29 @@ class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
       );
     }
     //validar email
+  }
+  Widget _iniciarsesion() {
+    return Container(
+      height: 50,
+      width: 300,
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 6,
+            spreadRadius: 0,
+            offset: Offset(0, 4.0))
+      ]),
+      child: RaisedButton(
+        child: Text(
+          'Enviar',
+          style: TextStyle(fontSize: 16),
+        ),
+        elevation: (10),
+        color: Color.fromRGBO(32, 173, 244, 1),
+        textColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        onPressed: recoverPass,
+      ),
+    );
   }
 }

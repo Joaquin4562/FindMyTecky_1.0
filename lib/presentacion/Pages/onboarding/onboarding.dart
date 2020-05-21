@@ -105,7 +105,7 @@ class _OnBoardingState extends State<OnBoarding> {
                             ),
                             SizedBox(height: 30.0),
                             Text(
-                              '¿Donde se encuentra?',
+                              '¿Dónde se encuentra?',
                               style: kTitleStyle,
                             ),
                             SizedBox(height: 15.0),
@@ -137,7 +137,7 @@ class _OnBoardingState extends State<OnBoarding> {
                             ),
                             SizedBox(height: 15.0),
                             Text(
-                              'Serán las notificaciones las que haran que te enteres si tu transporte se encuentra cerca de tu parada',
+                              'Serán las notificaciones las que harán que te enteres si tu transporte se encuentra cerca de tu parada',
                               style: kSubtitleStyle,
                             ),
                           ],
@@ -159,7 +159,7 @@ class _OnBoardingState extends State<OnBoarding> {
                             ),
                             SizedBox(height: 30.0),
                             Text(
-                              'Una nueva experancia\npara tomar el transporte',
+                              'Una nueva experiencia\npara tomar el transporte',
                               style: kTitleStyle,
                             ),
                             SizedBox(height: height < 600 ? 5.0:15.0),

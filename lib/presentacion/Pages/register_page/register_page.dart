@@ -19,6 +19,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final password1Controller = TextEditingController();
   final password2Controller = TextEditingController();
   bool _isObscure = true;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
 
   @override
   void dispose() {
@@ -42,6 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
             image: AssetImage("assets/fondo.png"), fit: BoxFit.cover),
       ),
       child: Scaffold(
+        key: _scaffoldKey,
         backgroundColor: Colors.transparent,
         body: Builder(builder: (context) {
           return SingleChildScrollView(
@@ -250,16 +253,20 @@ class _RegisterPageState extends State<RegisterPage> {
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(children: [
-        TextSpan(text: 'Al registratse aceptas las  '),
+        TextSpan(text: 'Al registrarse aceptas las  '),
         TextSpan(
             text: 'Condiciones de servicio ',
             style: new TextStyle(color: Colors.blue),
-            recognizer: new TapGestureRecognizer()..onTap = () {}),
+            recognizer: new TapGestureRecognizer()..onTap = () {
+              _showDialog('Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas "Letraset", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum..',1);
+            }),
         TextSpan(text: 'y la'),
         TextSpan(
-            text: ' Política de privaciada ',
+            text: ' Política de privacidad ',
             style: new TextStyle(color: Colors.blue),
-            recognizer: new TapGestureRecognizer()..onTap = () {}),
+            recognizer: new TapGestureRecognizer()..onTap = () {
+              _showDialog('Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas "Letraset", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum..',2);
+            }),
         TextSpan(text: 'de Find My Tecky.'),
       ]),
     );
@@ -386,5 +393,29 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
+  }
+  _showDialog(String texto, int tipo) {
+    showDialog(
+        context: _scaffoldKey.currentContext,
+        builder: (context) {
+          return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Aceptar'))
+              ],
+              title: tipo == 1? Text('Condiciónes de servicio'):Text('Politica de privacidad'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text('$texto'),
+                ],
+              ));
+        });
   }
 }
