@@ -55,6 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
+  ///Opcion para cambiar de pantalla entre el OnBoarding y el Menú
   void _cambiarPantalla(){
     final prefs = PreferenciasUsuario();
     if (prefs.isFristUser) {

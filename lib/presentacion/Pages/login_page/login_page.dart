@@ -14,31 +14,38 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
+///variable de tipo FirebaseAuth y lo instancia
 final FirebaseAuth _auth = FirebaseAuth.instance;
+///variable de tipo GoogleSignIn y la instancia
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
 Future<String> signInWithGoogle() async {
+  ///variable de tipo GoogleSignInAccount y la inicializa con el el iniciar sesión con Google
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+  ///Vaiable tipo de GoogleSignInAuthentication y lo inicializa con la autenticación
   final GoogleSignInAuthentication googleSignInAuthentication =
       await googleSignInAccount.authentication;
-
+  ///Obtiene las credenciales del inicio de sesión 
   final AuthCredential credential = GoogleAuthProvider.getCredential(
     accessToken: googleSignInAuthentication.accessToken,
     idToken: googleSignInAuthentication.idToken,
   );
-
+  ///El resultado de de la autenticación como parametro las credenciales
   final AuthResult authResult = await _auth.signInWithCredential(credential);
+  /// usuario de Firebase 
   final FirebaseUser user = authResult.user;
 
   assert(!user.isAnonymous);
   assert(await user.getIdToken() != null);
 
+  /// Guarda el usuario actual 
   final FirebaseUser currentUser = await _auth.currentUser();
   assert(user.uid == currentUser.uid);
 
   return 'signInWithGoogle succeeded: $user';
 }
 
+///Variable para cerrar sesión
 void signOutGoogle() async {
   await googleSignIn.signOut();
 }

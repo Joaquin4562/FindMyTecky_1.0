@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:simple_animations/simple_animations.dart';
 
-class FadeAnimation extends StatelessWidget {  
+class FadeAnimation extends StatelessWidget { 
+  ///Variable para el tiempo 
   final double delay;
   final Widget child;
 
@@ -9,10 +10,12 @@ class FadeAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ///Vairable que guarda los valores para el Tween
     final tween = MultiTrackTween([
       Track("opacity").add(Duration(milliseconds: 500), Tween(begin: 0.0, end: 1.0)),
       Track("translateY").add(Duration(milliseconds: 500), Tween(begin: -30.0, end: 0.0),curve: Curves.easeOut),  
     ]);
+    ///Retorna todo la Animación
     return ControlledAnimation(
       delay: Duration(milliseconds: (500 * delay).round()),
       duration: tween.duration,

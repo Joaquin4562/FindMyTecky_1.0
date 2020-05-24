@@ -9,7 +9,7 @@ class OnBoarding extends StatefulWidget {
   @override
   _OnBoardingState createState() => _OnBoardingState();
 }
-
+///Crea el OnBoarding que ve el usuario al inicio
 class _OnBoardingState extends State<OnBoarding> {
   final int _numPages = 3;
   final PageController _pageController = PageController(initialPage: 0);
