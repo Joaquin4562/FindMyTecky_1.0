@@ -13,32 +13,36 @@ class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
-
+///variable de tipo FirebaseAuth y lo instancia
 final FirebaseAuth _auth = FirebaseAuth.instance;
+///variable de tipo GoogleSignIn y la instancia
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
 Future<String> signInWithGoogle() async {
+  ///variable de tipo GoogleSignInAccount y la inicializa con el el iniciar sesión con Google
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+  ///Vaiable tipo de GoogleSignInAuthentication y lo inicializa con la autenticación
   final GoogleSignInAuthentication googleSignInAuthentication =
       await googleSignInAccount.authentication;
-
+  ///Obtiene las credenciales del inicio de sesión 
   final AuthCredential credential = GoogleAuthProvider.getCredential(
     accessToken: googleSignInAuthentication.accessToken,
     idToken: googleSignInAuthentication.idToken,
   );
-
+  ///El resultado de de la autenticación como parametro las credenciales
   final AuthResult authResult = await _auth.signInWithCredential(credential);
+  /// usuario de Firebase 
   final FirebaseUser user = authResult.user;
 
   assert(!user.isAnonymous);
   assert(await user.getIdToken() != null);
-
+  /// Guarda el usuario actual 
   final FirebaseUser currentUser = await _auth.currentUser();
   assert(user.uid == currentUser.uid);
 
   return 'signInWithGoogle succeeded: $user';
 }
-
+///Método para cerrar sesión
 void signOutGoogle() async {
   await googleSignIn.signOut();
 }
@@ -46,9 +50,13 @@ void signOutGoogle() async {
 class _LoginPageState extends State<LoginPage> {
   //String  _email = '';
   bool _isObscure = true;
+  ///Instancia la variable de la autenticación 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  ///Instancia la variable de la referencia de FireStore
   Firestore _firestoreReference = Firestore.instance;
+  ///Guarda el Email
   TextEditingController _controllerEmail = new TextEditingController();
+  ///Guarda la contraseña 
   TextEditingController _controllerPass = new TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -195,15 +203,15 @@ class _LoginPageState extends State<LoginPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         onPressed: () {
           //PRUEBAS
-          // Navigator.pushReplacementNamed(context, 'MapaPage');
+          /// Navigator.pushReplacementNamed(context, 'MapaPage');
           String correo = _controllerEmail.text;
-
+          ///Returna True si cumple la evaluación de la expresión regular
           bool _evaluarCorreo(String correo) {
             RegExp exp = new RegExp(
                 r"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
             return exp.hasMatch(correo);
           }
-
+        ///Evaluación del login
           if (_evaluarCorreo(correo) != false && _controllerPass.text != '') {
             _autenticar(_controllerEmail.text, _controllerPass.text);
           } else {
@@ -282,7 +290,7 @@ class _LoginPageState extends State<LoginPage> {
       color: Colors.white,
     );
   }
-
+  ///Autentica el correo y la contraseña
   Future _autenticar(String email, String pass) async {
     try {
       AuthResult result =

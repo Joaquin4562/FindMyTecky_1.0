@@ -12,7 +12,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 //   } catch (e) {
 //   }
 // }
-
+///Obtiene los datos del usuario
 Future<QuerySnapshot> getUsers() {
   final databaseReference = Firestore.instance;
   return databaseReference.collection('Usuarios').getDocuments();

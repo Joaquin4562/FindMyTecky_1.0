@@ -25,6 +25,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    ///Returna todo los providers del Tecky
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(builder: (context) => CoordenadasChoferProvider(),),
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         
-        //CONEXION DE PANTALLAS
+        ///CONEXION DE PANTALLAS
         routes: <String, WidgetBuilder>{
           'LoginPage': (BuildContext context) => LoginPage(),
           'RegisterPage': (BuildContext context) => RegisterPage(),
