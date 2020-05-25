@@ -9,9 +9,11 @@ class OnBoarding extends StatefulWidget {
   @override
   _OnBoardingState createState() => _OnBoardingState();
 }
-
+///Crea el OnBoarding que ve el usuario al inicio
 class _OnBoardingState extends State<OnBoarding> {
+  ///Da el número de páginas para el OnBoarding
   final int _numPages = 3;
+  ///Inicializa la página
   final PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;
 
@@ -22,7 +24,7 @@ class _OnBoardingState extends State<OnBoarding> {
     }
     return list;
   }
-
+  ///Da el tiempo y todo sobre el OnBoarding
   Widget _indicator(bool isActive) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 150),
