@@ -13,7 +13,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    ///Duración del tiempo 
     var _duration = new Duration(seconds: 3);
+    ///Tiempo y duración en el cambio de pantalla
     Timer(_duration, _cambiarPantalla);
   }
 
@@ -54,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
     );
   }
-
+  ///Opcion para cambiar de pantalla entre el OnBoarding y el Menú
   void _cambiarPantalla(){
     final prefs = PreferenciasUsuario();
     if (prefs.isFristUser) {

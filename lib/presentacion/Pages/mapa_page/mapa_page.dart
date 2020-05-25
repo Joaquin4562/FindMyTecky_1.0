@@ -26,17 +26,26 @@ class MapaPage extends StatefulWidget {
 class _MapaPageState extends State<MapaPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   InterstitialAd newTripAd;
+  ///Variable que guarda el metodo preferencias de usuario
   final prefs = PreferenciasUsuario();
+  ///Variable instancia la Referencia de la base de datos
   final databaseReference = Firestore.instance;
+  ///Localización del Mante
   LatLng locationMante = LatLng(22.7433, -98.9747);
+  ///Variable de GoogleMapController
   GoogleMapController _mapController;
+  ///Variable de Location
   Location location = new Location();
   TextEditingController _controllerTime = TextEditingController();
+  ///Tiempo
   TimeOfDay _time = TimeOfDay.now();
   TimeOfDay _picker;
   bool _addMarkerEnabled = false;
+  ///Variable de las markerss
   var _markers = Set<Marker>();
+  ///Latitud y longitud del Usuario
   LatLng estudianteUsuario = LatLng(22.726189, -98.968277);
+  ///Latitud y Longitud del Chofer
   LatLng choferTecky;
 
   @override
@@ -220,6 +229,7 @@ class _MapaPageState extends State<MapaPage> {
                             target: locationMante,
                             zoom: 6,
                           ),
+                          ///Markers
                           markers: _markersUsuarioChofer(
                               snapshot.data.documents[prefs.rutaActual]),
                           myLocationEnabled: true,
@@ -238,7 +248,7 @@ class _MapaPageState extends State<MapaPage> {
           }),
     );
   }
-
+  ///Metodo para el Marker
   Set<Marker> _markersUsuarioChofer(snapshot) {
     final choferTeckyCoordenadas =
         Provider.of<CoordenadasChoferProvider>(context);
@@ -268,16 +278,17 @@ class _MapaPageState extends State<MapaPage> {
     return markers;
   }
 
+///Crea el controller de GoogleMapController
   void _onMapaCreated(GoogleMapController controller) {
     _mapController = controller;
     _centerView(choferTecky, estudianteUsuario);
   }
 
-  //Método que se ajusta para que se vean los 2 puntos
+  ///Método que se ajusta para que se vean los 2 puntos
   _centerView(chofer, estudiante) async {
     final api = Provider.of<DirectionProviderApi>(context);
     await _mapController.getVisibleRegion();
-    //Cálculo los 4 puntos cardinales
+    ///Cálculo los 4 puntos cardinales
     await api.findDirections(chofer, estudiante);
 
     double posicionIzquierda = min(estudiante.latitude, chofer.latitude);
@@ -291,6 +302,7 @@ class _MapaPageState extends State<MapaPage> {
     _mapController.animateCamera(cameraUpdate);
   }
 
+///Manda la parada nueva
   void _mandarParada(LatLng latLngParada) async {
     final documentID = prefs.documentUserID;
     prefs.latitudP = latLngParada.latitude;
@@ -306,10 +318,11 @@ class _MapaPageState extends State<MapaPage> {
     });
   }
 
+///Añade el parker con la parada que agregaste
   void _addMarker(LatLng latLngParada) {
     if (_addMarkerEnabled) {
       LatLng _parada = latLngParada;
-      //manda cordenadas de la parada a firestore
+      ///manda cordenadas de la parada a firestore
       _mandarParada(latLngParada);
       setState(() {
         _markers.add(Marker(
@@ -317,7 +330,7 @@ class _MapaPageState extends State<MapaPage> {
             position: _parada,
             infoWindow: InfoWindow(title: 'PARADA')));
         _addMarkerEnabled = false;
-        //Reactiva la publicidad
+        ///Reactiva la publicidad
         newTripAd = getNewTripInterstitialAd()..load();
       });
     }
@@ -419,6 +432,7 @@ class _MapaPageState extends State<MapaPage> {
       ),
     );
   }
+  ///Selecciona el tiempo
   Future<Null> selectedTime(BuildContext context) async{
     _picker = await showTimePicker(
       context: context,

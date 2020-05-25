@@ -74,12 +74,12 @@ class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
       ),
     );
   }
-
+  ///Método que returna true si cumple la expression regular requerida del correo
   bool _evaluarCorreo(String correo) {
     RegExp exp = new RegExp(r"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
     return exp.hasMatch(correo);
   }
-
+///Envia el correo 
   recoverPass() async {
     Usuario user = compareEmail(email.text);
     if (user != null && _evaluarCorreo(email.text) == true) {
@@ -112,7 +112,7 @@ class _OlvidarcontraPageState extends State<OlvidarcontraPage> {
         textColor: Colors.black,
       );
     }
-    //validar email
+    ///validar email
   }
   Widget _iniciarsesion() {
     return Container(
