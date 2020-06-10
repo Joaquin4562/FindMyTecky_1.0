@@ -134,6 +134,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _inputCorreo() {
     return TextField(
+      autocorrect: false,
       controller: _controllerEmail,
       style: TextStyle(color: Colors.white),
       keyboardType: TextInputType.emailAddress,

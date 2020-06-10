@@ -49,6 +49,7 @@ class _MapaPageState extends State<MapaPage> {
   String _controllerTime;
   String _controllerDate;
   DateTime fechaNotificacion;
+  LocalNotification localNotification;
 
   ///Tiempo
   TimeOfDay _time = TimeOfDay.now();
@@ -70,6 +71,8 @@ class _MapaPageState extends State<MapaPage> {
     FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
     newTripAd = getNewTripInterstitialAd()..load();
     calcularUbicacion();
+    localNotification = LocalNotification();
+    localNotification.initializationSettings();
   }
 
   @override
@@ -95,7 +98,7 @@ class _MapaPageState extends State<MapaPage> {
           SizedBox(height: 10,),
           FloatingActionButton(
             heroTag: "btn2",
-          child: Icon(Icons.map),
+          child: Icon(Icons.map, size: 34,),
           elevation: 10,
           backgroundColor: Colors.black54,
           onPressed: () {
@@ -133,7 +136,7 @@ class _MapaPageState extends State<MapaPage> {
                                   Navigator.pop(context);
                                   if (_controllerDate != null &&
                                       _controllerTime != null) {
-                                    calcularNotificaciones();
+                                     calcularNotificaciones();
                                   } else {
                                     Fluttertoast.showToast(
                                         msg: "Ingrese los campos");
@@ -497,6 +500,7 @@ class _MapaPageState extends State<MapaPage> {
               ),
             ),
             ButtonBar(
+              alignment: MainAxisAlignment.start,
               children: <Widget>[
                 FlatButton(
                   child: Text(
@@ -515,7 +519,7 @@ class _MapaPageState extends State<MapaPage> {
     },
         elevation: 5,
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(40))));
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(20))));
   }
 
   Widget _title(rutaActual) {
@@ -582,12 +586,11 @@ class _MapaPageState extends State<MapaPage> {
         fechaNotificacion.day,
         _picker.hour,
         _picker.minute);
-    final localNotification = LocalNotification();
-    localNotification.cancelAllNotifications();
+    //localNotification.cancelAllNotifications();
     localNotification.sendSingleNotificationSchedule(
-        time, "¡ATENCION!", "EL TECKY ESTA APUNTO DE PASAR", 1234);
+        time.toUtc(), "¡ATENCION!", "EL TECKY ESTA APUNTO DE PASAR", 1234);
     Fluttertoast.showToast(
-        msg: "Se activo la alarma a las ${time.toString()}",
+        msg: "Se activo la alarma a las ${time.year}-${time.month}-${time.day}-${time.hour}-${time.minute}",
         toastLength: Toast.LENGTH_LONG,
         fontSize: 18);
   }
