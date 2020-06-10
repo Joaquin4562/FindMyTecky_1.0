@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:find_my_tecky_1_0/negocios/providers/coordenadas_chofer_provider.dart';
 import 'package:find_my_tecky_1_0/negocios/providers/directions_provider_2.dart';
+import 'package:find_my_tecky_1_0/negocios/util/local_notification.dart';
 import 'package:find_my_tecky_1_0/negocios/util/preferencias_de_usuario.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -13,6 +14,7 @@ import 'package:find_my_tecky_1_0/negocios/util/admob_utils.dart';
 import 'package:find_my_tecky_1_0/presentacion/Pages/login_page/login_page.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:location/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -26,25 +28,39 @@ class MapaPage extends StatefulWidget {
 class _MapaPageState extends State<MapaPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   InterstitialAd newTripAd;
+
   ///Variable que guarda el metodo preferencias de usuario
   final prefs = PreferenciasUsuario();
+
   ///Variable instancia la Referencia de la base de datos
   final databaseReference = Firestore.instance;
+
   ///Localización del Mante
   LatLng locationMante = LatLng(22.7433, -98.9747);
+
   ///Variable de GoogleMapController
   GoogleMapController _mapController;
+
   ///Variable de Location
   Location location = new Location();
-  TextEditingController _controllerTime = TextEditingController();
+  bool _serviceEnabled;
+  MapType _mapType = MapType.normal;
+  PermissionStatus _permissionGranted;
+  String _controllerTime;
+  String _controllerDate;
+  DateTime fechaNotificacion;
+
   ///Tiempo
   TimeOfDay _time = TimeOfDay.now();
   TimeOfDay _picker;
   bool _addMarkerEnabled = false;
+
   ///Variable de las markerss
   var _markers = Set<Marker>();
+
   ///Latitud y longitud del Usuario
   LatLng estudianteUsuario = LatLng(22.726189, -98.968277);
+
   ///Latitud y Longitud del Chofer
   LatLng choferTecky;
 
@@ -53,6 +69,7 @@ class _MapaPageState extends State<MapaPage> {
     super.initState();
     FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
     newTripAd = getNewTripInterstitialAd()..load();
+    calcularUbicacion();
   }
 
   @override
@@ -61,13 +78,39 @@ class _MapaPageState extends State<MapaPage> {
         Provider.of<CoordenadasChoferProvider>(context);
     return Scaffold(
       key: _scaffoldKey,
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.adjust,size: 35,),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          FloatingActionButton(
+            heroTag: "btn1",
+          child: SpinKitDualRing(
+            size: 26,
+            color: Colors.redAccent,
+          ),
           elevation: 10,
           backgroundColor: Colors.black54,
           onPressed: () {
             _centerView(choferTecky, estudianteUsuario);
           }),
+          SizedBox(height: 10,),
+          FloatingActionButton(
+            heroTag: "btn2",
+          child: Icon(Icons.map),
+          elevation: 10,
+          backgroundColor: Colors.black54,
+          onPressed: () {
+            if(_mapType == MapType.normal){
+              setState(() {
+                _mapType = MapType.hybrid;
+              });
+            }else{
+              setState(() {
+                _mapType = MapType.normal;
+              });
+            }
+          })
+        ],
+      ),
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.black45,
@@ -75,41 +118,81 @@ class _MapaPageState extends State<MapaPage> {
         elevation: 5,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.alarm_add),
-            onPressed: (){
-              showDialog(
-                        context: _scaffoldKey.currentContext,
-                        builder: (context) {
-                          return AlertDialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            actions: <Widget>[
-                              FlatButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    //TODO: CALCULAR NOTIFICACIÓN
-                                  },
-                                  child: Text('Aceptar'))
+              icon: Icon(Icons.alarm_add),
+              onPressed: () {
+                showDialog(
+                    context: _scaffoldKey.currentContext,
+                    builder: (context) {
+                      return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          actions: <Widget>[
+                            FlatButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  if (_controllerDate != null &&
+                                      _controllerTime != null) {
+                                    calcularNotificaciones();
+                                  } else {
+                                    Fluttertoast.showToast(
+                                        msg: "Ingrese los campos");
+                                  }
+                                },
+                                child: Text('Aceptar'))
+                          ],
+                          title: Text('IMPORTANTE'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text('Seleccione una hora'),
+                              RaisedButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)
+                                ),
+                                child: _controllerTime == null
+                                    ? Icon(Icons.timer)
+                                    : Text(_controllerTime),
+                                onPressed: () {
+                                  selectedTime(context);
+                                },
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Text('Seleccione una fecha'),
+                              RaisedButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)
+                                ),
+                                child: _controllerDate == null
+                                    ? Icon(Icons.date_range)
+                                    : Text(_controllerDate),
+                                onPressed: () {
+                                  showDatePicker(
+                                          confirmText: "Aceptar",
+                                          helpText: "Selecciona una hora",
+                                          cancelText: "Cancelar",
+                                          context: _scaffoldKey.currentContext,
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime(2020),
+                                          lastDate: DateTime(2023))
+                                      .then((date) {
+                                    setState(() {
+                                      fechaNotificacion = date;
+                                      _controllerDate = date.year.toString() +
+                                          "/" +
+                                          date.month.toString() +
+                                          "/" +
+                                          date.day.toString();
+                                    });
+                                  });
+                                },
+                              )
                             ],
-                            title: Text('IMPORTANTE'),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Text('Seleccione una hora'),
-                                TextField(
-                                  controller: _controllerTime,
-                                  autofocus: false,
-                                  onTap: (){
-                                    selectedTime(context);
-                                  },
-                                )
-                              ],
-                            )
-                          );
-                        });
-            }
-          )
+                          ));
+                    });
+              })
         ],
       ),
       drawer: Drawer(
@@ -131,18 +214,15 @@ class _MapaPageState extends State<MapaPage> {
                           image: AssetImage('assets/logo.png'),
                           fit: BoxFit.cover)),
                 ),
-                _listTile(
-                    "Rotaria", coordenadasChoferProvider),
+                _listTile("Rotaria", coordenadasChoferProvider),
                 Divider(
                   color: Colors.white,
                 ),
-                _listTile(
-                    'Centro', coordenadasChoferProvider),
+                _listTile('Centro', coordenadasChoferProvider),
                 Divider(
                   color: Colors.white,
                 ),
-                _listTile(
-                    'Linares', coordenadasChoferProvider),
+                _listTile('Linares', coordenadasChoferProvider),
                 Divider(
                   color: Colors.white,
                 ),
@@ -212,7 +292,10 @@ class _MapaPageState extends State<MapaPage> {
           stream: databaseReference.collection('Transportes').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData)
-              return Center(child: SpinKitDoubleBounce(color: Colors.red,));
+              return Center(
+                  child: SpinKitDoubleBounce(
+                color: Colors.red,
+              ));
             return ListView(
                 itemExtent: MediaQuery.of(context).size.height * 1.2,
                 children: <Widget>[
@@ -224,11 +307,12 @@ class _MapaPageState extends State<MapaPage> {
                         width: MediaQuery.of(context).size.width,
                         child: GoogleMap(
                           onTap: _addMarker,
-                          mapType: MapType.normal,
+                          mapType: _mapType,
                           initialCameraPosition: CameraPosition(
                             target: locationMante,
                             zoom: 6,
                           ),
+
                           ///Markers
                           markers: _markersUsuarioChofer(
                               snapshot.data.documents[prefs.rutaActual]),
@@ -248,6 +332,7 @@ class _MapaPageState extends State<MapaPage> {
           }),
     );
   }
+
   ///Metodo para el Marker
   Set<Marker> _markersUsuarioChofer(snapshot) {
     final choferTeckyCoordenadas =
@@ -259,7 +344,7 @@ class _MapaPageState extends State<MapaPage> {
     final markers = Set<Marker>();
     markers.add(Marker(
         markerId: MarkerId("PuntoEstudiante"),
-        position: estudianteUsuario,
+        position: LatLng(prefs.latitudUser, prefs.longitudUser),
         infoWindow: InfoWindow(title: "Posición Actual")));
 
     markers.add(Marker(
@@ -278,7 +363,7 @@ class _MapaPageState extends State<MapaPage> {
     return markers;
   }
 
-///Crea el controller de GoogleMapController
+  ///Crea el controller de GoogleMapController
   void _onMapaCreated(GoogleMapController controller) {
     _mapController = controller;
     _centerView(choferTecky, estudianteUsuario);
@@ -286,15 +371,29 @@ class _MapaPageState extends State<MapaPage> {
 
   ///Método que se ajusta para que se vean los 2 puntos
   _centerView(chofer, estudiante) async {
+    double posicionIzquierda;
+    double posicionDerecha;
+    double posicionArriba;
+    double posicionAbajo;
+    LatLng ubiacionUsuario = LatLng(prefs.latitudUser, prefs.longitudUser);
     final api = Provider.of<DirectionProviderApi>(context);
+    if (prefs.latitudP != 0) {
+      ///Cálculo los 4 puntos cardinales
+      posicionIzquierda = min(prefs.latitudP, chofer.latitude);
+      posicionDerecha = max(prefs.latitudP, chofer.latitude);
+      posicionArriba = max(prefs.longitudP, chofer.longitude);
+      posicionAbajo = min(prefs.longitudP, chofer.longitude);
+      LatLng parada = new LatLng(prefs.latitudP, prefs.longitudP);
+      await api.findDirections(chofer, parada);
+    } else {
+      ///Cálculo los 4 puntos cardinales
+      posicionIzquierda = min(ubiacionUsuario.latitude, chofer.latitude);
+      posicionDerecha = max(ubiacionUsuario.latitude, chofer.latitude);
+      posicionArriba = max(ubiacionUsuario.longitude, chofer.longitude);
+      posicionAbajo = min(ubiacionUsuario.longitude, chofer.longitude);
+      await api.findDirections(chofer, ubiacionUsuario);
+    }
     await _mapController.getVisibleRegion();
-    ///Cálculo los 4 puntos cardinales
-    await api.findDirections(chofer, estudiante);
-
-    double posicionIzquierda = min(estudiante.latitude, chofer.latitude);
-    double posicionDerecha = max(estudiante.latitude, chofer.latitude);
-    double posicionArriba = max(estudiante.longitude, chofer.longitude);
-    double posicionAbajo = min(estudiante.longitude, chofer.longitude);
     var bounds = LatLngBounds(
         southwest: LatLng(posicionIzquierda, posicionAbajo),
         northeast: LatLng(posicionDerecha, posicionArriba));
@@ -302,7 +401,7 @@ class _MapaPageState extends State<MapaPage> {
     _mapController.animateCamera(cameraUpdate);
   }
 
-///Manda la parada nueva
+  ///Manda la parada nueva
   void _mandarParada(LatLng latLngParada) async {
     final documentID = prefs.documentUserID;
     prefs.latitudP = latLngParada.latitude;
@@ -318,10 +417,11 @@ class _MapaPageState extends State<MapaPage> {
     });
   }
 
-///Añade el parker con la parada que agregaste
+  ///Añade el parker con la parada que agregaste
   void _addMarker(LatLng latLngParada) {
     if (_addMarkerEnabled) {
       LatLng _parada = latLngParada;
+
       ///manda cordenadas de la parada a firestore
       _mandarParada(latLngParada);
       setState(() {
@@ -330,6 +430,7 @@ class _MapaPageState extends State<MapaPage> {
             position: _parada,
             infoWindow: InfoWindow(title: 'PARADA')));
         _addMarkerEnabled = false;
+
         ///Reactiva la publicidad
         newTripAd = getNewTripInterstitialAd()..load();
       });
@@ -337,8 +438,7 @@ class _MapaPageState extends State<MapaPage> {
   }
 
   Widget _listTile(
-      String ruta,
-      CoordenadasChoferProvider coordenadasChoferProvider ) {
+      String ruta, CoordenadasChoferProvider coordenadasChoferProvider) {
     return ListTile(
       title: Text(
         ruta,
@@ -400,7 +500,7 @@ class _MapaPageState extends State<MapaPage> {
               children: <Widget>[
                 FlatButton(
                   child: Text(
-                    'Ok',
+                    'Aceptar',
                     style: TextStyle(fontSize: 20),
                   ),
                   onPressed: () {
@@ -412,7 +512,10 @@ class _MapaPageState extends State<MapaPage> {
           ],
         ),
       );
-    });
+    },
+        elevation: 5,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(40))));
   }
 
   Widget _title(rutaActual) {
@@ -432,18 +535,60 @@ class _MapaPageState extends State<MapaPage> {
       ),
     );
   }
+
   ///Selecciona el tiempo
-  Future<Null> selectedTime(BuildContext context) async{
+  Future<Null> selectedTime(BuildContext context) async {
     _picker = await showTimePicker(
       context: context,
       initialTime: _time,
     );
-    if(_picker != null){
+    if (_picker != null) {
       MaterialLocalizations localizations = MaterialLocalizations.of(context);
-      String formatedTime = localizations.formatTimeOfDay(_picker,alwaysUse24HourFormat: false);
+      String formatedTime =
+          localizations.formatTimeOfDay(_picker, alwaysUse24HourFormat: false);
       setState(() {
-        _controllerTime.text = formatedTime;
+        _controllerTime = formatedTime;
       });
     }
+  }
+
+  void calcularUbicacion() async {
+    final prefs = PreferenciasUsuario();
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+    _permissionGranted = await location.hasPermission();
+
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+    location.getLocation().then((userLocation) {
+      prefs.latitudUser = userLocation.latitude;
+      prefs.longitudUser = userLocation.longitude;
+    });
+  }
+
+  void calcularNotificaciones() {
+    DateTime time = new DateTime(
+        fechaNotificacion.year,
+        fechaNotificacion.month,
+        fechaNotificacion.day,
+        _picker.hour,
+        _picker.minute);
+    final localNotification = LocalNotification();
+    localNotification.cancelAllNotifications();
+    localNotification.sendSingleNotificationSchedule(
+        time, "¡ATENCION!", "EL TECKY ESTA APUNTO DE PASAR", 1234);
+    Fluttertoast.showToast(
+        msg: "Se activo la alarma a las ${time.toString()}",
+        toastLength: Toast.LENGTH_LONG,
+        fontSize: 18);
   }
 }

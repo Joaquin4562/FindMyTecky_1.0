@@ -63,8 +63,10 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.of(context).pushReplacementNamed('OnBoarding');
     } else {
       if (!prefs.isLogged){
+        prefs.rutaActual = 0;
         Navigator.of(context).pushReplacementNamed('MenuPage');
       } else{
+        prefs.rutaActual = 0;
         Navigator.of(context).pushReplacementNamed('MapaPage');
       }
     }

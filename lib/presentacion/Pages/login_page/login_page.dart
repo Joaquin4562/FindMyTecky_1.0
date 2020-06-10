@@ -117,8 +117,9 @@ class _LoginPageState extends State<LoginPage> {
                                   height: 20,
                                 ),
                                 _iniciarsesion(),
-                                _divider(),
-                                _iniciargoogle(),
+                                //DESHABILITADO TERMPORALMENTE
+                                //_divider(),
+                                // _iniciargoogle(),
                               ],
                             ),
                           ],
@@ -222,23 +223,18 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _iniciargoogle() {
-    return SignInButton(Buttons.Google,
-        text: 'Iniciar con Google',
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 40),
-        onPressed: () {
-      signInWithGoogle().whenComplete(() {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) {
-              return MapaPage();
-            },
-          ),
-        );
-      });
-    });
-  }
+  // Widget _iniciargoogle() {
+  //   return SignInButton(Buttons.Google,
+  //       text: 'Iniciar con Google',
+  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+  //       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 40),
+  //       onPressed: () {
+  //     signInWithGoogle().then((user) {
+  //       print(user);
+  //       Navigator.pushReplacementNamed(context, 'MapaPage');
+  //     });
+  //   });
+  // }
 
   Widget _olvidarcontrasena() {
     return Padding(
@@ -328,12 +324,14 @@ class _LoginPageState extends State<LoginPage> {
         TextSpan(
             text: 'Condiciones de servicio ',
             style: new TextStyle(color: Colors.blue),
-            recognizer: new TapGestureRecognizer()..onTap = () {_showDialog('Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas "Letraset", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum.',1);}),
+            recognizer: new TapGestureRecognizer()..onTap = () {_showDialog('Los presentes términos y condiciones contienen los acuerdos entre los miembros de la Sociedad Find My Tecky, para establecer que las personas descarguen cualquier aplicación desarrollada por la Sociedad Find My Tecky, así como las marcas, los productos y los servicios que preste la misma sociedad.\nAl descargar la Aplicación, el Usuario deberá manifestar su aceptación de los presentes Términos y Condiciones de la Aplicación a efecto de poder usar la Aplicación, y en caso de que no los acepte, el Usuario deberá de abstenerse de usar la Aplicación.\nFind My Tecky pone a disposición del Usuario, la presente Aplicación para que así este mismo pueda realizar de manera eficiente la prestación de los Servicios.' 
+            +'\nLa Aplicación de Find My Tecky proporcionará al Usuario el servicio de ubicación del transporte escolar, y visualización en tiempo real del mapa con la ubicación para proporcionar al Usuario una mejor experiencia en el transporte escolar. \n Los datos ingresados por los Usuarios a través de la app y obtenidos por la sociedad serán almacenados bajo estándares internacionales de alta seguridad, los cuales ayudarán a la prestación de los Servicios por medio de la misma.'
+            +'Para que la sociedad pueda prestar los Servicios, el Usuario se obliga a ingresar los datos solicitados en la aplicación.',1);}),
         TextSpan(text: 'y la'),
         TextSpan(
             text: ' Política de privaciada ',
             style: new TextStyle(color: Colors.blue),
-            recognizer: new TapGestureRecognizer()..onTap = () {_showDialog('Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas "Letraset", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum.',2);}),
+            recognizer: new TapGestureRecognizer()..onTap = () {_showDialog('La presente Política de Privacidad establece los términos en que Find My Tecky usa y protege la información que es proporcionada por sus usuarios al momento de utilizar su app.\nEsta compañía está comprometida con la seguridad de los datos de sus usuarios. Cuando le pedimos llenar los campos de información personal con la cual usted pueda ser identificado, lo hacemos asegurando que sólo se empleará de acuerdo con los términos de este documento. Sin embargo, esta Política de Privacidad puede cambiar con el tiempo o ser actualizada por lo que le recomendamos y enfatizamos revisar continuamente esta página para asegurarse que está de acuerdo con dichos cambios. \n Nuestra app podrá recoger información personal, por ejemplo: Nombre, información de contacto como su dirección de correo electrónico e información demográfica. Así mismo cuando sea necesario podrá ser requerida información específica en caso de que pierda su contraseña.\nNuestra app emplea la información con el fin de proporcionar el mejor servicio posible, particularmente para mantener un registro de usuarios, de pedidos en caso que aplique, y mejorar nuestro servicio\nFind My Tecky está altamente comprometido para cumplir con el compromiso de mantener su información segura. Usamos los sistemas más avanzados y los actualizamos constantemente para asegurarnos que no exista ningún acceso no autorizado.',2);}),
         TextSpan(text: 'de Find My Tecky.'),
       ]),
     );
@@ -396,7 +394,7 @@ class _LoginPageState extends State<LoginPage> {
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Text('$texto'),
+                  Expanded(child: SingleChildScrollView(child: Text('$texto',textAlign: TextAlign.justify,))),
                 ],
               ));
         });

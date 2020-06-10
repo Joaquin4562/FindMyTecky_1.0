@@ -52,50 +52,49 @@ class _RegisterPageState extends State<RegisterPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 50),
               child: FadeAnimation(
                   1,
-                  Container(
-                    height: screenSize.height < 600
-                        ? screenSize.height + 50
-                        : screenSize.height - 100,
-                    decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.only(top: 30, left: 10, right: 10),
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            'Crea una cuenta',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 40,
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Padding(
+                        padding:
+                            const EdgeInsets.only(top: 30, left: 10, right: 10),
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              'Crea una cuenta',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 40,
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(15),
-                            child: Column(
-                              children: <Widget>[
-                                _textfieldNombre(),
-                                _textfieldApellido(),
-                                _textfieldCorreo(),
-                                _textfieldContrasena(),
-                                _textfieldConfirma()
-                              ],
+                            SizedBox(
+                              height: 20,
                             ),
-                          ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          _textCondiciones(),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          _btnRegistrarse(context),
-                        ],
+                            Padding(
+                              padding: EdgeInsets.all(15),
+                              child: Column(
+                                children: <Widget>[
+                                  _textfieldNombre(),
+                                  _textfieldApellido(),
+                                  _textfieldCorreo(),
+                                  _textfieldContrasena(),
+                                  _textfieldConfirma()
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            _textCondiciones(),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            _btnRegistrarse(context),
+                          ],
+                        ),
                       ),
                     ),
                   )),

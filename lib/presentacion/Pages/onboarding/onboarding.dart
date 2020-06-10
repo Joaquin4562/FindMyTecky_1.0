@@ -2,6 +2,7 @@ import 'package:find_my_tecky_1_0/negocios/util/preferencias_de_usuario.dart';
 import 'package:find_my_tecky_1_0/presentacion/utilities/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:location/location.dart';
 
 class OnBoarding extends StatefulWidget {
   OnBoarding({Key key}) : super(key: key);
@@ -11,6 +12,14 @@ class OnBoarding extends StatefulWidget {
 }
 ///Crea el OnBoarding que ve el usuario al inicio
 class _OnBoardingState extends State<OnBoarding> {
+  bool _serviceEnabled;
+  PermissionStatus _permissionGranted;
+  Location location = new Location();
+  @override
+  void initState() { 
+    super.initState();
+    calcularUbicacion();
+  }
   ///Da el número de páginas para el OnBoarding
   final int _numPages = 3;
   ///Inicializa la página
@@ -27,7 +36,7 @@ class _OnBoardingState extends State<OnBoarding> {
   ///Da el tiempo y todo sobre el OnBoarding
   Widget _indicator(bool isActive) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 150),
+      duration: Duration(milliseconds: 300),
       margin: EdgeInsets.symmetric(horizontal: 8.0),
       height: 8.0,
       width: isActive ? 24.0 : 16.0,
@@ -81,7 +90,7 @@ class _OnBoardingState extends State<OnBoarding> {
                   ),
                 ),
                 Container(
-                  height: height < 600 ? 400:600,
+                  height: height < 600 ? 400:550,
                   child: PageView(
                     physics: ClampingScrollPhysics(),
                     controller: _pageController,
@@ -101,11 +110,11 @@ class _OnBoardingState extends State<OnBoarding> {
                                 image: AssetImage(
                                   'assets/marker.png',
                                 ),
-                                height: height < 600 ? 100:300,
-                                width: height < 600 ? 100:300,
+                                height: height < 600 ? 100:250,
+                                width: height < 600 ? 100:250,
                               ),
                             ),
-                            SizedBox(height: 30.0),
+                            SizedBox(height: 20.0),
                             Text(
                               '¿Dónde se encuentra?',
                               style: kTitleStyle,
@@ -128,11 +137,11 @@ class _OnBoardingState extends State<OnBoarding> {
                                 image: AssetImage(
                                   'assets/not.png',
                                 ),
-                                height: height < 600 ? 100:300,
-                                width: height < 600 ? 100:300,
+                                height: height < 600 ? 100:240,
+                                width: height < 600 ? 100:250,
                               ),
                             ),
-                            SizedBox(height: 30.0),
+                            SizedBox(height: 20.0),
                             Text(
                               'No te lo pierdas\nnosotros te avisamos',
                               style: kTitleStyle,
@@ -155,11 +164,11 @@ class _OnBoardingState extends State<OnBoarding> {
                                 image: AssetImage(
                                   'assets/bus.png',
                                 ),
-                                height: height < 600 ? 100:300,
-                                width: height < 600 ? 100:300,
+                                height: height < 600 ? 100:250,
+                                width: height < 600 ? 100:250,
                               ),
                             ),
-                            SizedBox(height: 30.0),
+                            SizedBox(height: 20.0),
                             Text(
                               'Una nueva experiencia\npara tomar el transporte',
                               style: kTitleStyle,
@@ -246,5 +255,28 @@ class _OnBoardingState extends State<OnBoarding> {
             )
           : Text(''),
     );
+  }
+
+  void calcularUbicacion() async{
+    final prefs = PreferenciasUsuario();
+    _serviceEnabled = await location.serviceEnabled();
+    if(!_serviceEnabled){
+      _serviceEnabled = await location.requestService();
+      if(!_serviceEnabled){
+        return;
+      }
+    }
+    _permissionGranted = await location.hasPermission();
+
+    if(_permissionGranted == PermissionStatus.denied){
+      _permissionGranted = await location.requestPermission();
+      if(_permissionGranted != PermissionStatus.granted){
+        return;
+      }
+    }
+    location.getLocation().then((userLocation){
+      prefs.latitudUser = userLocation.latitude;
+      prefs.longitudUser = userLocation.longitude;
+    });
   }
 }
