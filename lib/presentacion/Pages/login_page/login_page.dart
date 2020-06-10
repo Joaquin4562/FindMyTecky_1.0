@@ -117,8 +117,9 @@ class _LoginPageState extends State<LoginPage> {
                                   height: 20,
                                 ),
                                 _iniciarsesion(),
-                                _divider(),
-                                _iniciargoogle(),
+                                //DESHABILITADO TERMPORALMENTE
+                                //_divider(),
+                                // _iniciargoogle(),
                               ],
                             ),
                           ],
@@ -222,23 +223,18 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _iniciargoogle() {
-    return SignInButton(Buttons.Google,
-        text: 'Iniciar con Google',
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 40),
-        onPressed: () {
-      signInWithGoogle().whenComplete(() {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) {
-              return MapaPage();
-            },
-          ),
-        );
-      });
-    });
-  }
+  // Widget _iniciargoogle() {
+  //   return SignInButton(Buttons.Google,
+  //       text: 'Iniciar con Google',
+  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+  //       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 40),
+  //       onPressed: () {
+  //     signInWithGoogle().then((user) {
+  //       print(user);
+  //       Navigator.pushReplacementNamed(context, 'MapaPage');
+  //     });
+  //   });
+  // }
 
   Widget _olvidarcontrasena() {
     return Padding(

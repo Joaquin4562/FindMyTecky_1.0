@@ -11,70 +11,73 @@ class _MenuPageState extends State<MenuPage> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-        body: Container(
+        body: SingleChildScrollView(
+          child: Container(
+      height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        color: Colors.black87,
-        image: DecorationImage(
-            image: AssetImage("assets/fondo.png"), fit: BoxFit.cover),
+          color: Colors.black87,
+          image: DecorationImage(
+              image: AssetImage("assets/fondo.png"), fit: BoxFit.cover),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 150, left: 10, right: 10),
-            child: FadeAnimation(
-                1,
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      flex: height < 600 ? 2:3,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image(image: AssetImage("assets/logo.png"),height: 130,)),
-                    ),
-                    Expanded(
-                      flex: 4,
-                      child: Text(
-                        'Find My Tecky',
-                        style: TextStyle(color: Colors.white, fontSize: 35),
-                      ),
-                    )
-                  ],
-                )),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            child: FadeAnimation(
-                1,
-                Container(
-                  height: MediaQuery.of(context).size.height < 600 ? 270:400,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.grey.withOpacity(0.2)),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 130, left: 10, right: 10),
+              child: FadeAnimation(
+                  1,
+                  Row(
                     children: <Widget>[
-                      Text(
-                        'Bienvenido a Find My Tecky!',
-                        textAlign: MediaQuery.of(context).size.height < 600 ? TextAlign.center : TextAlign.left,
-                        style: TextStyle(fontSize: 26, color: Colors.white),
+                      Expanded(
+                        flex: height < 600 ? 2:3,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image(image: AssetImage("assets/logo.png"),height: 130,)),
                       ),
-                      Column(
-                        children: <Widget>[
-                          _ingresarLog(context),
-                          _divider(),
-                          _crearCuenta()
-                        ],
+                      Expanded(
+                        flex: MediaQuery.of(context).size.width < 400 ? 2 : 4,
+                        child: Text(
+                          'Find My Tecky',
+                          style: TextStyle(color: Colors.white, fontSize: 35),
+                        ),
                       )
                     ],
-                  ),
-                )),
-          )
-        ],
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: FadeAnimation(
+                  1,
+                  Container(
+                    height: MediaQuery.of(context).size.height < 600 ? 270:400,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.grey.withOpacity(0.2)),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Text(
+                          'Bienvenido a Find My Tecky!',
+                          textAlign: MediaQuery.of(context).size.height < 600 || MediaQuery.of(context).size.width < 500  ? TextAlign.center : TextAlign.left,
+                          style: TextStyle(fontSize: 26, color: Colors.white),
+                        ),
+                        Column(
+                          children: <Widget>[
+                            _ingresarLog(context),
+                            _divider(),
+                            _crearCuenta()
+                          ],
+                        )
+                      ],
+                    ),
+                  )),
+            )
+          ],
       ),
-    ));
+    ),
+        ));
   }
 
   Widget _ingresarLog(context) {
@@ -125,7 +128,7 @@ class _MenuPageState extends State<MenuPage> {
               ),
             ),
           ),
-          Text('or',style: TextStyle(color: Colors.white,fontSize: 15),),
+          Text('o',style: TextStyle(color: Colors.white,fontSize: 15),),
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8),

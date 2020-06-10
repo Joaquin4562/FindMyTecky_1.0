@@ -53,5 +53,17 @@ class PreferenciasUsuario {
   set rutaActual(int ruta){
     _prefs.setInt('ruta', ruta);
   }
+  get latitudUser{
+    return _prefs.getDouble('latitudU') ?? 0.0;
+  }
+  set latitudUser(double latitud){
+    _prefs.setDouble('latitudU', latitud);
+  }
+  get longitudUser{
+    return _prefs.getDouble('longitudU') ?? 0.0;
+  }
+  set longitudUser(double longitud){
+    _prefs.setDouble('longitudU', longitud);
+  }
 
 }
