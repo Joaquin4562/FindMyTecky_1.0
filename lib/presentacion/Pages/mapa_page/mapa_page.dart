@@ -132,11 +132,11 @@ class _MapaPageState extends State<MapaPage> {
                           ),
                           actions: <Widget>[
                             FlatButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
+                                onPressed: () {                             
                                   if (_controllerDate != null &&
                                       _controllerTime != null) {
-                                     calcularNotificaciones();
+                                    calcularNotificaciones();
+                                    Navigator.pop(context);
                                   } else {
                                     Fluttertoast.showToast(
                                         msg: "Ingrese los campos");
@@ -277,6 +277,8 @@ class _MapaPageState extends State<MapaPage> {
                       onTap: () {
                         signOutGoogle();
                         prefs.isLogged = false;
+                        prefs.latitudP = 0;
+                        prefs.longitudP = 0;
                         Navigator.pushReplacementNamed(context, 'LoginPage');
                       },
                       trailing: Icon(
@@ -586,7 +588,7 @@ class _MapaPageState extends State<MapaPage> {
         fechaNotificacion.day,
         _picker.hour,
         _picker.minute);
-    //localNotification.cancelAllNotifications();
+    localNotification.cancelAllNotifications();
     localNotification.sendSingleNotificationSchedule(
         time.toUtc(), "¡ATENCION!", "EL TECKY ESTA APUNTO DE PASAR", 1234);
     Fluttertoast.showToast(
